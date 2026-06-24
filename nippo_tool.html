@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作業日報ツール</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f4f2ed;color:#222;min-height:100vh}
+.app{max-width:980px;margin:0 auto;padding:1.2rem 1rem 3rem}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:10px}
+h1{font-size:19px;font-weight:700;letter-spacing:0.02em}
+.header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.date-row{display:flex;align-items:center;gap:10px;margin-bottom:1.2rem}
+.date-row label{font-size:14px;color:#666}
+input[type=date]{font-size:14px;padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#fff;color:#222;font-family:inherit}
+.section{border:1px solid #ddd;border-radius:8px;margin-bottom:1.1rem;overflow:hidden;background:#fff}
+.section-header{background:#e8e4db;padding:9px 14px;display:flex;align-items:center;justify-content:space-between}
+.section-title{font-size:14px;font-weight:700;color:#333}
+.add-btn{font-size:12px;background:#fff;border:1px solid #bbb;border-radius:5px;padding:4px 10px;cursor:pointer;color:#555}
+.add-btn:hover{background:#f0ede6}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
+th{background:#f7f5f0;padding:7px 5px;text-align:center;color:#666;border-bottom:1px solid #ddd;font-weight:500;white-space:nowrap;font-size:11.5px}
+th:first-child{text-align:left;padding-left:12px;width:130px}
+th:last-child{width:36px}
+td{padding:4px 3px;border-bottom:1px solid #eee;text-align:center;vertical-align:middle}
+td:first-child{padding-left:12px;text-align:left}
+tr:last-child td{border-bottom:none}
+td input[type=text]{width:100%;border:none;background:transparent;font-size:12.5px;color:#222;padding:3px 4px;font-family:inherit}
+td input[type=text]:focus{outline:none;background:#f0f7ff;border-radius:3px}
+.del-btn{background:transparent;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1}
+.del-btn:hover{color:#c0392b}
+.actions{display:flex;gap:10px;margin-top:1.4rem;flex-wrap:wrap;align-items:center}
+.btn{padding:9px 18px;border-radius:6px;border:1px solid #bbb;background:#fff;cursor:pointer;font-size:13px;color:#333;font-family:inherit}
+.btn:hover{background:#f0ede6;border-color:#999}
+.btn-export{padding:9px 20px;border-radius:6px;border:1px solid #2a7ae2;background:#2a7ae2;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
+.btn-export:hover{background:#1a5fba}
+.notice{font-size:13px;color:#2a7ae2;display:none;font-weight:500}
+.tip{font-size:11.5px;color:#999;margin-top:8px}
+@media(max-width:600px){
+  th,td{font-size:11px}
+  th:first-child{width:90px}
+  h1{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>作業日報</h1>
+    <div class="header-right">
+      <button class="btn" onclick="loadDate()">🔄 読み込み</button>
+    </div>
+  </header>
+  <div class="date-row">
+    <label>日付</label>
+    <input type="date" id="reportDate">
+  </div>
+  <div id="sections"></div>
+  <div class="actions">
+    <button class="btn" onclick="saveData()">💾 保存</button>
+    <button class="btn-export" onclick="exportHTML()">📤 HTMLで書き出し（共有用）</button>
+    <span class="notice" id="notice"></span>
+  </div>
+  <p class="tip">※ 「HTMLで書き出し」で作ったファイルをLINE・メール・OneDriveで共有してください</p>
+</div>
+<script>
+const TIMES=['8:00〜10:00','10:30〜12:00','13:00〜15:00','15:30〜17:00','17:00〜20:00(残業)'];
+const CATS=[
+  {id:'dai1',name:'第一加工場'},
+  {id:'dai2',name:'第二加工場'},
+  {id:'han', name:'搬入運搬'},
+  {id:'hiroi',name:'拾い出し（加工場）'}
+];
+let state={date:'',rows:{}};
+
+function today(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function initState(d){
+  state={date:d,rows:{}};
+  CATS.forEach(c=>{state.rows[c.id]=[{site:'',workers:['','','','','']}]});
+}
+
+function init(){
+  const d=today();
+  document.getElementById('reportDate').value=d;
+  const saved=localStorage.getItem('nippo_'+d);
+  if(saved){state=JSON.parse(saved);}else{initState(d);}
+  render();
+  document.getElementById('reportDate').addEventListener('change',function(){
+    loadDate();
+  });
+}
+
+function loadDate(){
+  const d=document.getElementById('reportDate').value;
+  if(!d)return;
+  const saved=localStorage.getItem('nippo_'+d);
+  if(saved){state=JSON.parse(saved);}else{initState(d);}
+  state.date=d;
+  render();
+}
+
+function render(){
+  const cont=document.getElementById('sections');
+  cont.innerHTML='';
+  CATS.forEach(cat=>{
+    const rows=state.rows[cat.id]||[{site:'',workers:['','','','','']}];
+    let ths=TIMES.map(t=>`<th>${t}</th>`).join('');
+    let trs=rows.map((row,ri)=>{
+      let tds=TIMES.map((t,ti)=>`<td><input type="text" value="${esc(row.workers[ti]||'')}" onchange="setW('${cat.id}',${ri},${ti},this.value)" placeholder=""></td>`).join('');
+      let del=ri>0?`<td><button class="del-btn" onclick="delRow('${cat.id}',${ri})" title="削除">×</button></td>`:`<td></td>`;
+      return`<tr><td><input type="text" value="${esc(row.site||'')}" onchange="setS('${cat.id}',${ri},this.value)" placeholder="現場名"></td>${tds}${del}</tr>`;
+    }).join('');
+    cont.innerHTML+=`<div class="section">
+      <div class="section-header">
+        <span class="section-title">${cat.name}</span>
+        <button class="add-btn" onclick="addRow('${cat.id}')">＋ 行追加</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>現場名</th>${ths}<th></th></tr></thead>
+          <tbody>${trs}</tbody>
+        </table>
+      </div>
+    </div>`;
+  });
+}
+
+function esc(s){return s.replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function setS(c,ri,v){state.rows[c][ri].site=v;}
+function setW(c,ri,ti,v){state.rows[c][ri].workers[ti]=v;}
+function addRow(c){state.rows[c].push({site:'',workers:['','','','','']});render();}
+function delRow(c,ri){state.rows[c].splice(ri,1);render();}
+
+function saveData(){
+  state.date=document.getElementById('reportDate').value;
+  localStorage.setItem('nippo_'+state.date,JSON.stringify(state));
+  showNotice('✓ 保存しました');
+}
+
+function showNotice(msg){
+  const n=document.getElementById('notice');
+  n.textContent=msg;n.style.display='inline';
+  setTimeout(()=>{n.style.display='none';},2500);
+}
+
+function exportHTML(){
+  saveData();
+  const d=state.date;
+  const now=new Date().toLocaleString('ja-JP');
+  let secHtml='';
+  CATS.forEach(cat=>{
+    const rows=(state.rows[cat.id]||[]).filter(r=>r.site||r.workers.some(w=>w));
+    if(!rows.length)return;
+    let ths=TIMES.map(t=>`<th style="background:#f0ede6;padding:8px 6px;border:1px solid #ccc;font-size:12px;white-space:nowrap;font-weight:500">${t}</th>`).join('');
+    let trs=rows.map(row=>{
+      let tds=TIMES.map((t,ti)=>{
+        const w=row.workers[ti]||'';
+        if(w==='→')return`<td style="padding:8px 6px;border:1px solid #ddd;text-align:center;color:#aaa;font-size:13px">→</td>`;
+        if(w)return`<td style="padding:8px 6px;border:1px solid #ddd;text-align:center;background:#e6f4e6;font-weight:600;font-size:13px">${w}</td>`;
+        return`<td style="padding:8px 6px;border:1px solid #ddd;text-align:center"></td>`;
+      }).join('');
+      return`<tr><td style="padding:8px 12px;border:1px solid #ddd;font-weight:600;font-size:13px;background:#fafaf8">${row.site||''}</td>${tds}</tr>`;
+    }).join('');
+    secHtml+=`
+    <div style="margin-bottom:1.5rem">
+      <div style="background:#333;color:#fff;padding:8px 14px;font-size:14px;font-weight:700;border-radius:5px 5px 0 0">${cat.name}</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;background:#fff">
+          <thead><tr>
+            <th style="background:#f0ede6;padding:8px 12px;border:1px solid #ccc;text-align:left;min-width:110px;font-size:12px;font-weight:500">現場名</th>
+            ${ths}
+          </tr></thead>
+          <tbody>${trs}</tbody>
+        </table>
+      </div>
+    </div>`;
+  });
+
+  if(!secHtml){
+    alert('入力されたデータがありません。');
+    return;
+  }
+
+  const html=`<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>作業日報 ${d}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f4f2ed;color:#222}
+.container{max-width:980px;margin:0 auto;padding:1.5rem 1rem 3rem}
+header{display:flex;align-items:baseline;gap:16px;margin-bottom:1.5rem;border-bottom:2px solid #333;padding-bottom:10px}
+h1{font-size:20px;font-weight:700}
+.date-lbl{font-size:17px;color:#555}
+.footer{margin-top:2rem;font-size:11px;color:#aaa;text-align:right}
+@media(max-width:600px){body{font-size:12px}}
+@media print{body{background:#fff}.container{padding:0.5rem}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header><h1>作業日報</h1><span class="date-lbl">${d}</span></header>
+  ${secHtml}
+  <div class="footer">作成：${now}</div>
+</div>
+</body>
+</html>`;
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`nippo_${d}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  showNotice('✓ 書き出しました → ダウンロードフォルダを確認してください');
+}
+
+init();
+</script>
+</body>
+</html>
