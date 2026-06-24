@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f0ede6;color:#222;font-size:16px}
-.app{max-width:640px;margin:0 auto;padding:16px 12px 80px}
+.app{max-width:640px;margin:0 auto;padding:16px 12px 100px}
 h1{font-size:20px;font-weight:700;margin-bottom:16px}
 .date-row{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .date-row label{font-size:14px;color:#666;flex-shrink:0}
@@ -27,25 +27,50 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .time-label{font-size:12px;color:#888;flex-shrink:0;width:140px}
 .time-input{flex:1;font-size:15px;padding:8px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;color:#222;-webkit-appearance:none}
 .time-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
-.actions{position:fixed;bottom:0;left:0;right:0;background:#f0ede6;border-top:1px solid #ddd;padding:12px 16px;display:flex;gap:10px}
-.btn-save{flex:1;padding:13px;border-radius:8px;border:1px solid #bbb;background:#fff;cursor:pointer;font-size:14px;color:#333;font-family:inherit}
-.btn-export{flex:2;padding:13px;border-radius:8px;border:none;background:#2a7ae2;cursor:pointer;font-size:14px;color:#fff;font-family:inherit;font-weight:700}
+.actions{position:fixed;bottom:0;left:0;right:0;background:#f0ede6;border-top:1px solid #ddd;padding:10px 12px;display:flex;gap:8px;flex-wrap:wrap}
+.btn-save{flex:1;padding:13px;border-radius:8px;border:1px solid #bbb;background:#fff;cursor:pointer;font-size:13px;color:#333;font-family:inherit;min-width:70px}
+.btn-pdf{flex:2;padding:13px;border-radius:8px;border:none;background:#e8734a;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700;min-width:100px}
+.btn-pdf:active{background:#c05a35}
+.btn-export{flex:2;padding:13px;border-radius:8px;border:none;background:#2a7ae2;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700;min-width:100px}
 .btn-export:active{background:#1a5fba}
-.notice{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;display:none;white-space:nowrap}
+.notice{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;display:none;white-space:nowrap;z-index:100}
+
+/* 印刷・PDF用スタイル */
+@media print{
+  body{background:#fff;font-size:12px}
+  .app{padding:10px}
+  .actions,.notice,.add-row-btn,.del-row-btn{display:none!important}
+  h1{font-size:18px;margin-bottom:8px}
+  .cat{border:1px solid #999;margin-bottom:12px;break-inside:avoid}
+  .cat-head{background:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:7px 12px;font-size:13px}
+  .row-block{padding:8px 12px}
+  .time-label{width:120px;font-size:11px}
+  .time-input{border:none;background:transparent;font-size:12px;padding:4px 6px}
+  .site-input{border:none;background:transparent;font-size:13px;font-weight:700;padding:4px 6px}
+  .row-top{margin-bottom:6px}
+  .time-list{gap:4px}
+  .print-header{display:flex!important;align-items:baseline;gap:12px;margin-bottom:12px;border-bottom:2px solid #333;padding-bottom:8px}
+}
+.print-header{display:none}
 </style>
 </head>
 <body>
 <div class="app">
-  <h1>作業日報</h1>
-  <div class="date-row">
+  <div class="print-header">
+    <h1>作業日報</h1>
+    <span id="printDate" style="font-size:16px;color:#555"></span>
+  </div>
+  <h1 class="screen-only">作業日報</h1>
+  <div class="date-row screen-only">
     <label>日付</label>
     <input type="date" id="reportDate">
   </div>
   <div id="cats"></div>
 </div>
-<div class="actions">
+<div class="actions screen-only">
   <button class="btn-save" onclick="saveData()">💾 保存</button>
-  <button class="btn-export" onclick="exportHTML()">📤 共有用HTML作成</button>
+  <button class="btn-pdf" onclick="printPDF()">🖨️ PDF出力</button>
+  <button class="btn-export" onclick="exportHTML()">📤 HTML共有</button>
 </div>
 <div class="notice" id="notice"></div>
 <script>
@@ -119,6 +144,12 @@ function showNotice(msg){
 function saveData(){
   try{localStorage.setItem('nippo_'+data.date,JSON.stringify(data));showNotice('✓ 保存しました');}
   catch(e){showNotice('✓ 入力内容を確認しました');}
+}
+
+function printPDF(){
+  const d=document.getElementById('reportDate').value||today();
+  document.getElementById('printDate').textContent=d;
+  window.print();
 }
 
 function exportHTML(){
