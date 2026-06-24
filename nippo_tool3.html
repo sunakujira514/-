@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f0ede6;color:#222;font-size:16px}
-.app{max-width:640px;margin:0 auto;padding:16px 12px 100px}
+.app{max-width:640px;margin:0 auto;padding:16px 12px 110px}
 h1{font-size:20px;font-weight:700;margin-bottom:16px}
 .date-row{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .date-row label{font-size:14px;color:#666;flex-shrink:0}
@@ -29,26 +29,37 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .time-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
 .actions{position:fixed;bottom:0;left:0;right:0;background:#f0ede6;border-top:1px solid #ddd;padding:10px 12px;display:flex;gap:8px;flex-wrap:wrap}
 .btn-save{flex:1;padding:13px;border-radius:8px;border:1px solid #bbb;background:#fff;cursor:pointer;font-size:13px;color:#333;font-family:inherit;min-width:70px}
-.btn-pdf{flex:2;padding:13px;border-radius:8px;border:none;background:#e8734a;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700;min-width:100px}
+.btn-pdf{flex:2;padding:13px;border-radius:8px;border:none;background:#e8734a;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
 .btn-pdf:active{background:#c05a35}
-.btn-export{flex:2;padding:13px;border-radius:8px;border:none;background:#2a7ae2;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700;min-width:100px}
+.btn-export{flex:2;padding:13px;border-radius:8px;border:none;background:#2a7ae2;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
 .btn-export:active{background:#1a5fba}
-.notice{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;display:none;white-space:nowrap;z-index:100}
-
-/* 印刷・PDF用スタイル */
+.notice{position:fixed;bottom:95px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;display:none;white-space:nowrap;z-index:100}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal{background:#fff;border-radius:14px;padding:24px 20px;max-width:400px;width:100%}
+.modal h2{font-size:16px;font-weight:700;margin-bottom:12px}
+.modal p{font-size:14px;color:#444;line-height:1.7;margin-bottom:14px}
+.modal-url{background:#f4f2ed;border-radius:8px;padding:10px 12px;font-size:11px;color:#666;word-break:break-all;margin-bottom:16px;border:1px solid #ddd;max-height:80px;overflow-y:auto}
+.modal-btns{display:flex;gap:10px}
+.modal-btn-copy{flex:1;padding:11px;border-radius:8px;border:none;background:#2a7ae2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.modal-btn-close{flex:1;padding:11px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#333;font-size:14px;cursor:pointer;font-family:inherit}
+.history-section{background:#fff;border-radius:10px;margin-bottom:16px;border:1px solid #ddd;overflow:hidden}
+.history-head{background:#888;color:#fff;padding:8px 14px;font-size:13px;font-weight:700}
+.history-list{padding:8px 0}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.history-item:last-child{border-bottom:none}
+.history-item:active{background:#f4f2ed}
+.history-date{font-size:14px;color:#333}
+.history-arrow{color:#bbb;font-size:16px}
 @media print{
-  body{background:#fff;font-size:12px}
+  body{background:#fff}
   .app{padding:10px}
-  .actions,.notice,.add-row-btn,.del-row-btn{display:none!important}
-  h1{font-size:18px;margin-bottom:8px}
+  .actions,.notice,.modal-overlay,.add-row-btn,.del-row-btn,.history-section{display:none!important}
   .cat{border:1px solid #999;margin-bottom:12px;break-inside:avoid}
   .cat-head{background:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:7px 12px;font-size:13px}
   .row-block{padding:8px 12px}
   .time-label{width:120px;font-size:11px}
   .time-input{border:none;background:transparent;font-size:12px;padding:4px 6px}
   .site-input{border:none;background:transparent;font-size:13px;font-weight:700;padding:4px 6px}
-  .row-top{margin-bottom:6px}
-  .time-list{gap:4px}
   .print-header{display:flex!important;align-items:baseline;gap:12px;margin-bottom:12px;border-bottom:2px solid #333;padding-bottom:8px}
 }
 .print-header{display:none}
@@ -60,19 +71,34 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
     <h1>作業日報</h1>
     <span id="printDate" style="font-size:16px;color:#555"></span>
   </div>
-  <h1 class="screen-only">作業日報</h1>
-  <div class="date-row screen-only">
+  <h1>作業日報</h1>
+  <div class="date-row">
     <label>日付</label>
     <input type="date" id="reportDate">
   </div>
+  <div id="historySection"></div>
   <div id="cats"></div>
 </div>
-<div class="actions screen-only">
+<div class="actions">
   <button class="btn-save" onclick="saveData()">💾 保存</button>
   <button class="btn-pdf" onclick="printPDF()">🖨️ PDF出力</button>
   <button class="btn-export" onclick="exportHTML()">📤 HTML共有</button>
 </div>
 <div class="notice" id="notice"></div>
+
+<!-- 保存URLモーダル -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>📌 このURLをブックマークして保存</h2>
+    <p>以下のURLにデータが保存されています。<br>このURLをブックマークすると、次回開いたときにデータが復元されます。</p>
+    <div class="modal-url" id="modalUrl"></div>
+    <div class="modal-btns">
+      <button class="modal-btn-copy" onclick="copyUrl()">📋 URLをコピー</button>
+      <button class="modal-btn-close" onclick="closeModal()">閉じる</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const TIMES=[
   {label:'8:00〜10:00',key:'t1'},
@@ -88,6 +114,7 @@ const CATS=[
   {id:'hiroi',name:'拾い出し（加工場）'}
 ];
 let data={};
+let savedUrls={};
 
 function initData(d){
   data={date:d};
@@ -100,11 +127,103 @@ function today(){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
+// URLハッシュからデータを読み込む
+function loadFromHash(){
+  const hash=location.hash;
+  if(!hash||hash.length<2)return false;
+  try{
+    const decoded=decodeURIComponent(hash.slice(1));
+    const parsed=JSON.parse(atob(decoded));
+    if(parsed.data){
+      data=parsed.data;
+      if(parsed.savedUrls)savedUrls=parsed.savedUrls;
+      document.getElementById('reportDate').value=data.date||today();
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+// データをURLハッシュに保存
+function buildSaveUrl(){
+  const payload={data:data,savedUrls:savedUrls};
+  const encoded=btoa(encodeURIComponent(JSON.stringify(payload)));
+  return location.origin+location.pathname+'#'+encoded;
+}
+
+function saveData(){
+  const d=document.getElementById('reportDate').value||today();
+  data.date=d;
+  // 履歴に追加
+  savedUrls[d]=true;
+  const saveUrl=buildSaveUrl();
+  // URLを更新
+  history.replaceState(null,'',saveUrl);
+  // モーダル表示
+  document.getElementById('modalUrl').textContent=saveUrl;
+  document.getElementById('modalOverlay').style.display='flex';
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').style.display='none';
+  showNotice('✓ URLをブックマークして保存してください');
+}
+
+function copyUrl(){
+  const url=document.getElementById('modalUrl').textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(()=>{
+      showNotice('✓ URLをコピーしました！');
+      closeModal();
+    });
+  }else{
+    const ta=document.createElement('textarea');
+    ta.value=url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showNotice('✓ URLをコピーしました！');
+    closeModal();
+  }
+}
+
+function renderHistory(){
+  const dates=Object.keys(savedUrls).sort().reverse();
+  const sec=document.getElementById('historySection');
+  if(dates.length===0){sec.innerHTML='';return;}
+  let items=dates.map(d=>`<div class="history-item" onclick="loadDate('${d}')"><span class="history-date">📅 ${d}</span><span class="history-arrow">›</span></div>`).join('');
+  sec.innerHTML=`<div class="history-section"><div class="history-head">📂 保存済み日報</div><div class="history-list">${items}</div></div>`;
+}
+
+function loadDate(d){
+  // 現在のURLハッシュから全データを取得し、指定日のデータを表示
+  const hash=location.hash;
+  if(hash&&hash.length>1){
+    try{
+      const decoded=decodeURIComponent(hash.slice(1));
+      const parsed=JSON.parse(atob(decoded));
+      if(parsed.data&&parsed.data.date===d){
+        data=parsed.data;
+        document.getElementById('reportDate').value=d;
+        render();
+        showNotice('📅 '+d+' を読み込みました');
+        return;
+      }
+    }catch(e){}
+  }
+  // 別の日付の場合は新規
+  initData(d);
+  document.getElementById('reportDate').value=d;
+  render();
+  showNotice('📅 '+d+' の新規日報です');
+}
+
 function render(){
   const cont=document.getElementById('cats');
   cont.innerHTML='';
   CATS.forEach(cat=>{
-    const rows=data[cat.id];
+    const rows=data[cat.id]||[newRow()];
     let rowsHtml=rows.map((row,ri)=>{
       let timeItems=TIMES.map(t=>`
         <div class="time-item">
@@ -128,6 +247,7 @@ function render(){
       ${rowsHtml}
     </div>`;
   });
+  renderHistory();
 }
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -139,11 +259,6 @@ function showNotice(msg){
   const n=document.getElementById('notice');
   n.textContent=msg;n.style.display='block';
   setTimeout(()=>{n.style.display='none';},2500);
-}
-
-function saveData(){
-  try{localStorage.setItem('nippo_'+data.date,JSON.stringify(data));showNotice('✓ 保存しました');}
-  catch(e){showNotice('✓ 入力内容を確認しました');}
 }
 
 function printPDF(){
@@ -189,9 +304,10 @@ function exportHTML(){
   showNotice('✓ 作成しました！');
 }
 
+// 初期化
 const td=today();
 document.getElementById('reportDate').value=td;
-initData(td);
+if(!loadFromHash()){initData(td);}
 render();
 document.getElementById('reportDate').addEventListener('change',function(){
   initData(this.value);render();
