@@ -22,7 +22,6 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .site-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
 .del-row-btn{flex-shrink:0;background:transparent;border:1px solid #ddd;border-radius:6px;padding:6px 10px;font-size:16px;cursor:pointer;color:#bbb;line-height:1}
 .del-row-btn:active{color:#c0392b;border-color:#c0392b}
-/* トラック選択 */
 .truck-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .truck-label{font-size:12px;color:#888;flex-shrink:0}
 .truck-tags{display:flex;flex-wrap:wrap;gap:6px;flex:1}
@@ -53,7 +52,6 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .modal-btns{display:flex;gap:10px}
 .modal-btn-copy{flex:1;padding:12px;border-radius:8px;border:none;background:#2a7ae2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .modal-btn-close{flex:1;padding:12px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#333;font-size:14px;cursor:pointer;font-family:inherit}
-/* メンバーポップアップ */
 .popup-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:flex-end;justify-content:center}
 .popup-overlay.show{display:flex}
 .popup-sheet{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:640px;padding:0 0 20px;max-height:75vh;display:flex;flex-direction:column}
@@ -69,10 +67,8 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .popup-list-item .yomi{font-size:12px;color:#aaa}
 .popup-list-item.clear{color:#e8734a;font-weight:500}
 .popup-list-empty{padding:20px;text-align:center;color:#aaa;font-size:14px}
-/* トラックポップアップ */
 .truck-popup-item{padding:14px 20px;border-bottom:1px solid #f0f0f0;font-size:15px;cursor:pointer;color:#333}
 .truck-popup-item:active{background:#fff3e0}
-/* 履歴 */
 .history-box{background:#fff;border-radius:10px;margin-bottom:16px;border:1px solid #ddd;overflow:hidden}
 .history-head{background:#777;color:#fff;padding:9px 14px;font-size:13px;font-weight:700}
 .history-item{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer}
@@ -80,7 +76,6 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .history-item:active{background:#f4f2ed}
 .history-date{font-size:14px;color:#333;font-weight:500}
 .history-arrow{color:#bbb;font-size:18px}
-/* メンバー管理 */
 .member-box{background:#fff;border-radius:10px;margin-bottom:16px;border:1px solid #ddd;overflow:hidden}
 .member-head{background:#5a7a5a;color:#fff;padding:10px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 .member-toggle-btn{font-size:12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:5px;padding:4px 10px;cursor:pointer;color:#fff}
@@ -139,8 +134,6 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
   <button class="btn-export" onclick="exportHTML()">📤 共有</button>
 </div>
 <div class="notice" id="notice"></div>
-
-<!-- 保存モーダル -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h2>💾 保存しました</h2>
@@ -152,8 +145,6 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
     </div>
   </div>
 </div>
-
-<!-- メンバー選択ポップアップ -->
 <div class="popup-overlay" id="memberPopupOverlay" onclick="closePopupByOverlay(event,'memberPopupOverlay')">
   <div class="popup-sheet">
     <div class="popup-head">
@@ -166,8 +157,6 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
     <div class="popup-list" id="memberListInPopup"></div>
   </div>
 </div>
-
-<!-- トラック選択ポップアップ -->
 <div class="popup-overlay" id="truckPopupOverlay" onclick="closePopupByOverlay(event,'truckPopupOverlay')">
   <div class="popup-sheet">
     <div class="popup-head">
@@ -177,7 +166,6 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
     <div class="popup-list" id="truckListInPopup"></div>
   </div>
 </div>
-
 <script>
 const TIMES_ALL=[
   {label:'8:00〜10:00',key:'t1'},
@@ -186,7 +174,6 @@ const TIMES_ALL=[
   {label:'15:30〜17:00',key:'t4'},
   {label:'17:00〜20:00(残業)',key:'t5'}
 ];
-// 搬入運搬は残業なし
 const TIMES_NO_OT=[
   {label:'8:00〜10:00',key:'t1'},
   {label:'10:30〜12:00',key:'t2'},
@@ -194,15 +181,30 @@ const TIMES_NO_OT=[
   {label:'15:30〜17:00',key:'t4'}
 ];
 const CATS=[
-  {id:'dai1',name:'第一加工場',times:TIMES_ALL},
-  {id:'dai2',name:'第二加工場',times:TIMES_ALL},
-  {id:'han', name:'搬入運搬',  times:TIMES_NO_OT},
-  {id:'hiroi',name:'拾い出し（加工場）',times:TIMES_ALL}
+  {id:'dai1',name:'第一加工場',times:TIMES_ALL,hasTruck:true},
+  {id:'dai2',name:'第二加工場',times:TIMES_ALL,hasTruck:true},
+  {id:'han', name:'搬入運搬',  times:TIMES_NO_OT,hasTruck:true},
+  {id:'hiroi',name:'拾い出し（加工場）',times:TIMES_ALL,hasTruck:false}
+];
+
+const DEFAULT_MEMBERS=[
+  {name:'西村',yomi:'にしむら'},{name:'畑',yomi:'はた'},{name:'矢延',yomi:'やのぶ'},
+  {name:'越村',yomi:'こしむら'},{name:'小田',yomi:'おだ'},{name:'後藤',yomi:'ごとう'},
+  {name:'中西',yomi:'なかにし'},{name:'藤原',yomi:'ふじわら'},{name:'孫',yomi:'そん'},
+  {name:'エモン',yomi:'えもん'},{name:'クリス',yomi:'くりす'},{name:'ラファエル',yomi:'らふぁえる'},
+  {name:'劉',yomi:'りゅう'},{name:'ズイ',yomi:'ずい'},{name:'バグス',yomi:'ばぐす'},
+  {name:'石岡',yomi:'いしおか'},{name:'岡本',yomi:'おかもと'},{name:'呉藤',yomi:'ごとう'},
+  {name:'協力会社',yomi:'きょうりょくがいしゃ'}
+];
+const DEFAULT_TRUCKS=[
+  '大型トラック','8tユニック','4tトラック','2tトラック','Wキャブ',
+  '岡本大型ユニック','岡本大型トラック','岡本8tユニック','岡本3tユニック',
+  '石岡8tユニック','石岡4tユニック'
 ];
 
 let allData={};
-let members=[];
-let trucks=[];
+let members=[...DEFAULT_MEMBERS];
+let trucks=[...DEFAULT_TRUCKS];
 let currentDate='';
 let pickTarget={catId:null,ri:null,key:null};
 let truckTarget={catId:null,ri:null};
@@ -273,10 +275,7 @@ function renderMembers(){
       <button class="member-tag-del" onclick="delMember(${i})">×</button>
     </div>`).join('');
   const truckTags=trucks.map((t,i)=>`
-    <div class="truck-reg-tag">
-      🚛 ${esc(t)}
-      <button class="truck-reg-tag-del" onclick="delTruck(${i})">×</button>
-    </div>`).join('');
+    <div class="truck-reg-tag">🚛 ${esc(t)}<button class="truck-reg-tag-del" onclick="delTruck(${i})">×</button></div>`).join('');
   box.innerHTML=`<div class="member-box">
     <div class="member-head" onclick="toggleMemberBody()">
       <span>👥 メンバー・トラック登録</span>
@@ -286,7 +285,7 @@ function renderMembers(){
       <div class="member-section-title">👤 メンバー（${members.length}人）</div>
       <div class="member-tags">${memberTags||'<span style="font-size:13px;color:#aaa">未登録</span>'}</div>
       <div class="member-add-row">
-        <p class="member-add-hint">名前と読み仮名を入力してください</p>
+        <p class="member-add-hint">名前と読み仮名を入力して追加</p>
         <div class="member-add-inputs">
           <input class="member-add-input" type="text" id="memberNameInput" placeholder="名前">
           <input class="member-add-input" type="text" id="memberYomiInput" placeholder="読み">
@@ -297,7 +296,7 @@ function renderMembers(){
       <div class="truck-reg-tags">${truckTags||'<span style="font-size:13px;color:#aaa">未登録</span>'}</div>
       <div class="member-add-row">
         <div class="member-add-inputs">
-          <input class="member-add-input" type="text" id="truckInput" placeholder="例：4tトラック、ユニック">
+          <input class="member-add-input" type="text" id="truckInput" placeholder="例：4tトラック">
           <button class="truck-add-btn" onclick="addTruck()">追加</button>
         </div>
       </div>
@@ -308,9 +307,7 @@ function renderMembers(){
   document.getElementById('truckInput').addEventListener('keydown',function(e){if(e.key==='Enter')addTruck();});
 }
 
-function toggleMemberBody(){
-  const b=document.getElementById('memberBody');if(b)b.classList.toggle('open');
-}
+function toggleMemberBody(){const b=document.getElementById('memberBody');if(b)b.classList.toggle('open');}
 function addMember(){
   const ni=document.getElementById('memberNameInput'),yi=document.getElementById('memberYomiInput');
   const name=ni.value.trim(),yomi=yi.value.trim();
@@ -326,7 +323,6 @@ function addTruck(){
 }
 function delTruck(i){trucks.splice(i,1);renderMembers();}
 
-/* メンバーポップアップ */
 function openMemberPopup(catId,ri,key){
   pickTarget={catId,ri,key};
   document.getElementById('memberSearchInput').value='';
@@ -349,7 +345,6 @@ function pickMember(name){
   closePopup('memberPopupOverlay');
 }
 
-/* トラックポップアップ */
 function openTruckPopup(catId,ri){
   truckTarget={catId,ri};
   renderTruckList();
@@ -359,12 +354,11 @@ function renderTruckList(){
   const row=getRow(truckTarget.catId,truckTarget.ri);
   const selected=row?row.trucks||[]:[];
   const list=document.getElementById('truckListInPopup');
-  if(!trucks.length){list.innerHTML='<div class="popup-list-empty">トラックが登録されていません<br>メンバー・トラック登録から追加してください</div>';return;}
+  if(!trucks.length){list.innerHTML='<div class="popup-list-empty">トラックが登録されていません</div>';return;}
   let html=trucks.map(t=>{
     const checked=selected.includes(t);
     return`<div class="truck-popup-item" onclick="toggleTruck('${esc(t)}')" style="${checked?'background:#fff3e0;font-weight:700':''}">
-      ${checked?'✅':'⬜'} 🚛 ${esc(t)}
-    </div>`;
+      ${checked?'✅':'⬜'} 🚛 ${esc(t)}</div>`;
   }).join('');
   html+='<div class="truck-popup-item" style="color:#e8734a" onclick="clearTrucks()">✕ クリア（全て外す）</div>';
   list.innerHTML=html;
@@ -375,10 +369,8 @@ function toggleTruck(name){
   const row=allData[currentDate][catId][ri];
   if(!row.trucks)row.trucks=[];
   const idx=row.trucks.indexOf(name);
-  if(idx>=0)row.trucks.splice(idx,1);
-  else row.trucks.push(name);
-  renderTruckList();
-  renderCats();
+  if(idx>=0)row.trucks.splice(idx,1);else row.trucks.push(name);
+  renderTruckList();renderCats();
 }
 function clearTrucks(){
   const{catId,ri}=truckTarget;
@@ -389,7 +381,6 @@ function clearTrucks(){
 
 function closePopup(id){document.getElementById(id).classList.remove('show');}
 function closePopupByOverlay(e,id){if(e.target===document.getElementById(id))closePopup(id);}
-
 function getRow(catId,ri){
   if(!allData[currentDate]||!allData[currentDate][catId])return null;
   return allData[currentDate][catId][ri]||null;
@@ -405,6 +396,11 @@ function renderCats(){
     let rowsHtml=rows.map((row,ri)=>{
       const selectedTrucks=row.trucks||[];
       const truckTagsHtml=selectedTrucks.map(t=>`<div class="truck-tag">🚛 ${esc(t)}<button class="truck-tag-del" onclick="removeTruckFromRow('${cat.id}',${ri},'${esc(t)}')">×</button></div>`).join('');
+      const truckSection=cat.hasTruck?`<div class="truck-row">
+        <span class="truck-label">🚛 トラック：</span>
+        <div class="truck-tags">${truckTagsHtml}</div>
+        <button class="truck-pick-btn" onclick="openTruckPopup('${cat.id}',${ri})">選択</button>
+      </div>`:'';
       let timeItems=times.map(t=>`
         <div class="time-item">
           <span class="time-label">${t.label}</span>
@@ -420,11 +416,7 @@ function renderCats(){
           <input class="site-input" type="text" value="${esc(row.site||'')}" placeholder="現場名を入力" oninput="setVal('${cat.id}',${ri},'site',this.value)">
           ${delBtn}
         </div>
-        <div class="truck-row">
-          <span class="truck-label">🚛 トラック：</span>
-          <div class="truck-tags">${truckTagsHtml}</div>
-          <button class="truck-pick-btn" onclick="openTruckPopup('${cat.id}',${ri})">選択</button>
-        </div>
+        ${truckSection}
         <div class="time-list">${timeItems}</div>
       </div>`;
     }).join('');
@@ -472,7 +464,7 @@ function exportHTML(){
   const d=currentDate;const dayData=allData[d]||{};const now=new Date().toLocaleString('ja-JP');
   let secHtml='';
   CATS.forEach(cat=>{
-    const rows=(dayData[cat.id]||[]).filter(r=>r.site||cat.times.some(t=>r[t.key])||( r.trucks&&r.trucks.length));
+    const rows=(dayData[cat.id]||[]).filter(r=>r.site||cat.times.some(t=>r[t.key])||(r.trucks&&r.trucks.length));
     if(!rows.length)return;
     let ths=cat.times.map(t=>`<th style="background:#f0ede6;padding:8px 5px;border:1px solid #ccc;font-size:11px;white-space:nowrap;font-weight:500">${t.label}</th>`).join('');
     let trs=rows.map(row=>{
@@ -482,12 +474,10 @@ function exportHTML(){
         if(w)return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center;background:#e6f4e6;font-weight:600;font-size:13px">${w}</td>`;
         return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center"></td>`;
       }).join('');
-      return`<tr>
-        <td style="padding:8px 10px;border:1px solid #ddd;font-size:13px;background:#fafaf8">
-          <div style="font-weight:700">${row.site||''}</div>
-          ${truckStr?`<div style="font-size:11px;color:#c07030;margin-top:3px">${truckStr}</div>`:''}
-        </td>${tds}
-      </tr>`;
+      return`<tr><td style="padding:8px 10px;border:1px solid #ddd;font-size:13px;background:#fafaf8">
+        <div style="font-weight:700">${row.site||''}</div>
+        ${truckStr?`<div style="font-size:11px;color:#c07030;margin-top:3px">${truckStr}</div>`:''}
+      </td>${tds}</tr>`;
     }).join('');
     secHtml+=`<div style="margin-bottom:1.5rem"><div style="background:#333;color:#fff;padding:8px 14px;font-size:14px;font-weight:700;border-radius:5px 5px 0 0">${cat.name}</div><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;background:#fff;min-width:500px"><thead><tr><th style="background:#f0ede6;padding:8px 10px;border:1px solid #ccc;text-align:left;min-width:110px;font-size:12px">現場名</th>${ths}</tr></thead><tbody>${trs}</tbody></table></div></div>`;
   });
