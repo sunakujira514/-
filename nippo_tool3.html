@@ -192,6 +192,20 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
   </div>
 </div>
 
+<!-- 時間帯コピーポップアップ -->
+<div class="popup-overlay" id="copyTimePopupOverlay" onclick="closePopupByOverlay(event,'copyTimePopupOverlay')">
+  <div class="popup-sheet">
+    <div class="popup-head">
+      <span class="popup-title">📋 コピー先の時間帯を選択</span>
+      <button class="popup-close" onclick="closePopup('copyTimePopupOverlay')">×</button>
+    </div>
+    <div class="popup-list" id="copyTimeListInPopup"></div>
+    <div class="popup-done-bar">
+      <button class="popup-done-btn" onclick="execCopyTime()">✓ コピー実行</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const TIMES_ALL=[
   {label:'8:00〜10:00',key:'t1'},
@@ -224,7 +238,8 @@ const DEFAULT_MEMBERS=[
 const DEFAULT_TRUCKS=[
   '大型トラック','8tユニック','4tトラック','2tトラック','Wキャブ',
   '岡本大型ユニック','岡本大型トラック','岡本8tユニック','岡本3tユニック',
-  '石岡8tユニック','石岡4tユニック'
+  '石岡8tユニック','石岡4tユニック',
+  'インストール大型トラック','インストール大型ユニック','インストール10tミニ','インストール4tユニック'
 ];
 
 let allData={};
@@ -505,6 +520,7 @@ function renderCats(){
                 onkeydown="if(event.key==='Enter'){addManualName('${cat.id}',${ri},'${t.key}',this);event.preventDefault()}">
               <button class="time-manual-add" onclick="addManualName('${cat.id}',${ri},'${t.key}',this.previousElementSibling)">追加</button>
               <button class="time-pick-btn" onclick="openMemberPopup('${cat.id}',${ri},'${t.key}')">一覧</button>
+              <button class="time-pick-btn" style="background:#fff8e0;border-color:#e0c060;color:#806000" onclick="openCopyTimePopup('${cat.id}',${ri},'${t.key}')">📋</button>
             </div>
           </div>
         </div>`;
@@ -547,6 +563,52 @@ function addRow(catId){
 }
 function delRow(catId,ri){allData[currentDate][catId].splice(ri,1);renderCats();}
 
+/* 時間帯コピー */
+let copyTimeSrc={catId:null,ri:null,key:null};
+let copyTimeDests=[];
+function openCopyTimePopup(catId,ri,key){
+  const names=getTimeNames(catId,ri,key);
+  if(!names.length){showNotice('⚠️ コピー元に名前がありません');return;}
+  copyTimeSrc={catId,ri,key};
+  copyTimeDests=[];
+  renderCopyTimeList();
+  document.getElementById('copyTimePopupOverlay').classList.add('show');
+}
+function renderCopyTimeList(){
+  const cat=CATS.find(c=>c.id===copyTimeSrc.catId);
+  if(!cat)return;
+  const list=document.getElementById('copyTimeListInPopup');
+  const srcNames=getTimeNames(copyTimeSrc.catId,copyTimeSrc.ri,copyTimeSrc.key);
+  let html=`<div style="padding:10px 20px;font-size:13px;color:#666;border-bottom:1px solid #eee">コピー元：<strong>${copyTimeSrc.key==='t1'?'8:00〜10:00':copyTimeSrc.key==='t2'?'10:30〜12:00':copyTimeSrc.key==='t3'?'13:00〜15:00':copyTimeSrc.key==='t4'?'15:30〜17:00':'17:00〜20:00(残業)'}</strong>（${srcNames.join('・')}）</div>`;
+  html+=cat.times.filter(t=>t.key!==copyTimeSrc.key).map(t=>{
+    const checked=copyTimeDests.includes(t.key);
+    return`<div class="popup-list-item" onclick="toggleCopyDest('${t.key}')" style="${checked?'background:#fff8e0;font-weight:700':''}">
+      ${checked?'✅':'⬜'} ${t.label}
+    </div>`;
+  }).join('');
+  list.innerHTML=html;
+}
+function toggleCopyDest(key){
+  const idx=copyTimeDests.indexOf(key);
+  if(idx>=0)copyTimeDests.splice(idx,1);else copyTimeDests.push(key);
+  renderCopyTimeList();
+}
+function execCopyTime(){
+  if(!copyTimeDests.length){showNotice('⚠️ コピー先を選んでください');return;}
+  const{catId,ri,key}=copyTimeSrc;
+  const srcNames=JSON.parse(JSON.stringify(getTimeNames(catId,ri,key)));
+  if(!allData[currentDate])allData[currentDate]=newDayData(currentDate);
+  copyTimeDests.forEach(destKey=>{
+    const row=allData[currentDate][catId][ri];
+    if(!row)return;
+    // 既存の名前に追加（重複除く）
+    if(!Array.isArray(row[destKey]))row[destKey]=row[destKey]?[row[destKey]]:[];
+    srcNames.forEach(n=>{if(!row[destKey].includes(n))row[destKey].push(n);});
+  });
+  closePopup('copyTimePopupOverlay');
+  renderCats();
+  showNotice('✓ '+copyTimeDests.length+'つの時間帯にコピーしました');
+}
 function copyPrevDay(){
   // 前日の日付を計算
   const cur=new Date(currentDate);
