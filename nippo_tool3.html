@@ -31,13 +31,20 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .truck-pick-btn{font-size:12px;background:#fff3e0;border:1px solid #f0a060;border-radius:16px;padding:4px 10px;cursor:pointer;color:#c06000}
 .truck-pick-btn:active{background:#ffe0b0}
 .time-list{display:flex;flex-direction:column;gap:10px}
-.time-item{display:flex;align-items:center;gap:8px}
-.time-label{font-size:12px;color:#888;flex-shrink:0;width:140px}
-.time-input-wrap{flex:1;display:flex;gap:6px}
-.time-input{flex:1;font-size:15px;padding:8px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;color:#222;-webkit-appearance:none;min-width:0}
-.time-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
-.pick-btn{flex-shrink:0;padding:8px 10px;border-radius:8px;border:1px solid #b0d0b0;background:#f0f7f0;cursor:pointer;font-size:13px;white-space:nowrap;color:#5a7a5a}
-.pick-btn:active{background:#d0ead0}
+.time-item{display:flex;align-items:flex-start;gap:8px}
+.time-label{font-size:12px;color:#888;flex-shrink:0;width:140px;padding-top:6px}
+.time-right{flex:1;display:flex;flex-direction:column;gap:6px}
+.time-names{display:flex;flex-wrap:wrap;gap:6px}
+.time-name-tag{display:flex;align-items:center;gap:4px;background:#e8f4e8;border:1px solid #90c090;border-radius:16px;padding:4px 10px;font-size:13px;color:#2a6a2a}
+.time-name-tag-del{background:transparent;border:none;cursor:pointer;color:#90b090;font-size:13px;line-height:1}
+.time-name-tag-del:active{color:#c0392b}
+.time-pick-btn{font-size:12px;background:#f0f7f0;border:1px solid #b0d0b0;border-radius:16px;padding:4px 10px;cursor:pointer;color:#5a7a5a;white-space:nowrap}
+.time-pick-btn:active{background:#d0ead0}
+.time-manual-row{display:flex;gap:6px;align-items:center}
+.time-manual-input{flex:1;font-size:14px;padding:6px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;color:#222;-webkit-appearance:none;min-width:0}
+.time-manual-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
+.time-manual-add{padding:6px 10px;border-radius:8px;border:none;background:#5a7a5a;color:#fff;font-size:13px;cursor:pointer;white-space:nowrap}
+.time-manual-add:active{background:#3a5a3a}
 .actions{position:fixed;bottom:0;left:0;right:0;background:#f0ede6;border-top:1px solid #ddd;padding:10px 12px;display:flex;gap:8px}
 .btn-save{flex:1;padding:13px;border-radius:8px;border:1px solid #bbb;background:#fff;cursor:pointer;font-size:13px;color:#333;font-family:inherit}
 .btn-pdf{flex:1;padding:13px;border-radius:8px;border:none;background:#e8734a;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
@@ -67,6 +74,8 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .popup-list-item .yomi{font-size:12px;color:#aaa}
 .popup-list-item.clear{color:#e8734a;font-weight:500}
 .popup-list-empty{padding:20px;text-align:center;color:#aaa;font-size:14px}
+.popup-done-bar{padding:12px 16px;border-top:1px solid #eee;flex-shrink:0}
+.popup-done-btn{width:100%;padding:12px;border-radius:8px;border:none;background:#2a7ae2;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
 .truck-popup-item{padding:14px 20px;border-bottom:1px solid #f0f0f0;font-size:15px;cursor:pointer;color:#333}
 .truck-popup-item:active{background:#fff3e0}
 .history-box{background:#fff;border-radius:10px;margin-bottom:16px;border:1px solid #ddd;overflow:hidden}
@@ -101,11 +110,10 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .member-add-hint{font-size:11px;color:#aaa;padding-left:2px}
 @media print{
   body{background:#fff}.app{padding:10px}
-  .actions,.notice,.modal-overlay,.popup-overlay,.add-row-btn,.del-row-btn,.history-box,.member-box,.pick-btn,.truck-pick-btn,.truck-tag-del{display:none!important}
+  .actions,.notice,.modal-overlay,.popup-overlay,.add-row-btn,.del-row-btn,.history-box,.member-box,.time-pick-btn,.truck-pick-btn,.truck-tag-del,.time-name-tag-del{display:none!important}
   .cat{border:1px solid #999;margin-bottom:12px;break-inside:avoid}
   .cat-head{background:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:7px 12px;font-size:13px}
-  .row-block{padding:8px 12px}.time-label{font-size:11px}
-  .time-input{border:none;background:transparent;font-size:12px;padding:4px 6px}
+  .row-block{padding:8px 12px}.time-label{font-size:11px;padding-top:4px}
   .site-input{border:none;background:transparent;font-size:13px;font-weight:700;padding:4px 6px}
   .truck-row{margin-bottom:6px}
   .print-header{display:flex!important;align-items:baseline;gap:12px;margin-bottom:12px;border-bottom:2px solid #333;padding-bottom:8px}
@@ -145,18 +153,25 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
     </div>
   </div>
 </div>
+
+<!-- メンバー選択ポップアップ（複数選択） -->
 <div class="popup-overlay" id="memberPopupOverlay" onclick="closePopupByOverlay(event,'memberPopupOverlay')">
   <div class="popup-sheet">
     <div class="popup-head">
-      <span class="popup-title">👤 メンバーを選択</span>
+      <span class="popup-title">👤 メンバーを選択（複数可）</span>
       <button class="popup-close" onclick="closePopup('memberPopupOverlay')">×</button>
     </div>
     <div class="popup-search">
       <input type="text" id="memberSearchInput" placeholder="名前・読みで絞り込み…" oninput="renderMemberList()">
     </div>
     <div class="popup-list" id="memberListInPopup"></div>
+    <div class="popup-done-bar">
+      <button class="popup-done-btn" onclick="closePopup('memberPopupOverlay')">✓ 完了</button>
+    </div>
   </div>
 </div>
+
+<!-- トラック選択ポップアップ -->
 <div class="popup-overlay" id="truckPopupOverlay" onclick="closePopupByOverlay(event,'truckPopupOverlay')">
   <div class="popup-sheet">
     <div class="popup-head">
@@ -164,8 +179,12 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
       <button class="popup-close" onclick="closePopup('truckPopupOverlay')">×</button>
     </div>
     <div class="popup-list" id="truckListInPopup"></div>
+    <div class="popup-done-bar">
+      <button class="popup-done-btn" onclick="closePopup('truckPopupOverlay')">✓ 完了</button>
+    </div>
   </div>
 </div>
+
 <script>
 const TIMES_ALL=[
   {label:'8:00〜10:00',key:'t1'},
@@ -186,7 +205,6 @@ const CATS=[
   {id:'han', name:'搬入運搬',  times:TIMES_NO_OT,hasTruck:true},
   {id:'hiroi',name:'拾い出し（加工場）',times:TIMES_ALL,hasTruck:false}
 ];
-
 const DEFAULT_MEMBERS=[
   {name:'西村',yomi:'にしむら'},{name:'畑',yomi:'はた'},{name:'矢延',yomi:'やのぶ'},
   {name:'越村',yomi:'こしむら'},{name:'小田',yomi:'おだ'},{name:'後藤',yomi:'ごとう'},
@@ -206,10 +224,15 @@ let allData={};
 let members=[...DEFAULT_MEMBERS];
 let trucks=[...DEFAULT_TRUCKS];
 let currentDate='';
+// 時間帯複数選択用
 let pickTarget={catId:null,ri:null,key:null};
 let truckTarget={catId:null,ri:null};
 
-function newRow(){return{site:'',trucks:[],t1:'',t2:'',t3:'',t4:'',t5:''};}
+function newRow(){
+  const row={site:'',trucks:[]};
+  [...TIMES_ALL,...TIMES_NO_OT].forEach(t=>{if(!row[t.key])row[t.key]=[];});
+  return row;
+}
 function newDayData(d){const obj={date:d};CATS.forEach(c=>{obj[c.id]=[newRow()];});return obj;}
 function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
@@ -219,7 +242,21 @@ function loadFromHash(){
   try{
     const json=decodeURIComponent(atob(hash.slice(1)));
     const parsed=JSON.parse(json);
-    if(parsed.allData)allData=parsed.allData;
+    if(parsed.allData){
+      // 旧形式（文字列）を配列に変換
+      Object.keys(parsed.allData).forEach(d=>{
+        CATS.forEach(cat=>{
+          (parsed.allData[d][cat.id]||[]).forEach(row=>{
+            cat.times.forEach(t=>{
+              if(typeof row[t.key]==='string'){row[t.key]=row[t.key]?[row[t.key]]:[];}
+              if(!Array.isArray(row[t.key]))row[t.key]=[];
+            });
+            if(!row.trucks)row.trucks=[];
+          });
+        });
+      });
+      allData=parsed.allData;
+    }
     if(parsed.members)members=parsed.members;
     if(parsed.trucks)trucks=parsed.trucks;
     return true;
@@ -323,6 +360,7 @@ function addTruck(){
 }
 function delTruck(i){trucks.splice(i,1);renderMembers();}
 
+/* メンバー複数選択ポップアップ */
 function openMemberPopup(catId,ri,key){
   pickTarget={catId,ri,key};
   document.getElementById('memberSearchInput').value='';
@@ -330,24 +368,71 @@ function openMemberPopup(catId,ri,key){
   document.getElementById('memberPopupOverlay').classList.add('show');
   setTimeout(()=>document.getElementById('memberSearchInput').focus(),100);
 }
+function getTimeNames(catId,ri,key){
+  if(!allData[currentDate]||!allData[currentDate][catId]||!allData[currentDate][catId][ri])return[];
+  const v=allData[currentDate][catId][ri][key];
+  return Array.isArray(v)?v:v?[v]:[];
+}
 function renderMemberList(){
   const q=document.getElementById('memberSearchInput').value.trim().toLowerCase();
   const filtered=q?members.filter(m=>m.name.includes(q)||(m.yomi&&m.yomi.includes(q))):members;
+  const selected=getTimeNames(pickTarget.catId,pickTarget.ri,pickTarget.key);
   const list=document.getElementById('memberListInPopup');
-  let html='<div class="popup-list-item clear" onclick="pickMember(\'\')">✕ クリア（空にする）</div>';
+  let html='<div class="popup-list-item clear" onclick="clearTimeNames()">✕ クリア（全員外す）</div>';
   if(!filtered.length){html+='<div class="popup-list-empty">該当するメンバーがいません</div>';}
-  else{html+=filtered.map(m=>`<div class="popup-list-item" onclick="pickMember('${esc(m.name)}')">${esc(m.name)}${m.yomi?`<span class="yomi">${esc(m.yomi)}</span>`:''}</div>`).join('');}
+  else{
+    html+=filtered.map(m=>{
+      const checked=selected.includes(m.name);
+      return`<div class="popup-list-item" onclick="toggleTimeName('${esc(m.name)}')" style="${checked?'background:#e8f4e8;font-weight:700':''}">
+        <span>${checked?'✅ ':'⬜ '}${esc(m.name)}</span>
+        ${m.yomi?`<span class="yomi">${esc(m.yomi)}</span>`:''}
+      </div>`;
+    }).join('');
+  }
   list.innerHTML=html;
 }
-function pickMember(name){
+function toggleTimeName(name){
   const{catId,ri,key}=pickTarget;
-  if(catId!==null){setVal(catId,ri,key,name);renderCats();}
-  closePopup('memberPopupOverlay');
+  if(!allData[currentDate])allData[currentDate]=newDayData(currentDate);
+  if(!allData[currentDate][catId])allData[currentDate][catId]=[newRow()];
+  if(!allData[currentDate][catId][ri])allData[currentDate][catId][ri]=newRow();
+  const row=allData[currentDate][catId][ri];
+  if(!Array.isArray(row[key]))row[key]=row[key]?[row[key]]:[];
+  const idx=row[key].indexOf(name);
+  if(idx>=0)row[key].splice(idx,1);else row[key].push(name);
+  renderMemberList();
+  renderCats();
+}
+function clearTimeNames(){
+  const{catId,ri,key}=pickTarget;
+  if(allData[currentDate]&&allData[currentDate][catId]&&allData[currentDate][catId][ri])
+    allData[currentDate][catId][ri][key]=[];
+  renderMemberList();renderCats();
+}
+function addManualName(catId,ri,key,input){
+  const name=input.value.trim();
+  if(!name)return;
+  if(!allData[currentDate])allData[currentDate]=newDayData(currentDate);
+  if(!allData[currentDate][catId])allData[currentDate][catId]=[newRow()];
+  if(!allData[currentDate][catId][ri])allData[currentDate][catId][ri]=newRow();
+  const row=allData[currentDate][catId][ri];
+  if(!Array.isArray(row[key]))row[key]=row[key]?[row[key]]:[];
+  if(!row[key].includes(name))row[key].push(name);
+  input.value='';
+  renderCats();
+}
+function removeTimeName(catId,ri,key,name){
+  if(!allData[currentDate]||!allData[currentDate][catId]||!allData[currentDate][catId][ri])return;
+  const row=allData[currentDate][catId][ri];
+  if(!Array.isArray(row[key]))return;
+  const idx=row[key].indexOf(name);
+  if(idx>=0)row[key].splice(idx,1);
+  renderCats();
 }
 
+/* トラックポップアップ */
 function openTruckPopup(catId,ri){
-  truckTarget={catId,ri};
-  renderTruckList();
+  truckTarget={catId,ri};renderTruckList();
   document.getElementById('truckPopupOverlay').classList.add('show');
 }
 function renderTruckList(){
@@ -401,15 +486,22 @@ function renderCats(){
         <div class="truck-tags">${truckTagsHtml}</div>
         <button class="truck-pick-btn" onclick="openTruckPopup('${cat.id}',${ri})">選択</button>
       </div>`:'';
-      let timeItems=times.map(t=>`
-        <div class="time-item">
+      let timeItems=times.map(t=>{
+        const names=Array.isArray(row[t.key])?row[t.key]:row[t.key]?[row[t.key]]:[];
+        const nameTags=names.map(n=>`<div class="time-name-tag">${esc(n)}<button class="time-name-tag-del" onclick="removeTimeName('${cat.id}',${ri},'${t.key}','${esc(n)}')">×</button></div>`).join('');
+        return`<div class="time-item">
           <span class="time-label">${t.label}</span>
-          <div class="time-input-wrap">
-            <input class="time-input" type="text" value="${esc(row[t.key]||'')}" placeholder="名前を入力"
-              oninput="setVal('${cat.id}',${ri},'${t.key}',this.value)" autocomplete="off">
-            <button class="pick-btn" onclick="openMemberPopup('${cat.id}',${ri},'${t.key}')">一覧</button>
+          <div class="time-right">
+            <div class="time-names">${nameTags}</div>
+            <div class="time-manual-row">
+              <input class="time-manual-input" type="text" placeholder="手入力で追加" autocomplete="off"
+                onkeydown="if(event.key==='Enter'){addManualName('${cat.id}',${ri},'${t.key}',this);event.preventDefault()}">
+              <button class="time-manual-add" onclick="addManualName('${cat.id}',${ri},'${t.key}',this.previousElementSibling)">追加</button>
+              <button class="time-pick-btn" onclick="openMemberPopup('${cat.id}',${ri},'${t.key}')">一覧</button>
+            </div>
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
       let delBtn=ri>0?`<button class="del-row-btn" onclick="delRow('${cat.id}',${ri})">×</button>`:'';
       return`<div class="row-block">
         <div class="row-top">
@@ -464,15 +556,16 @@ function exportHTML(){
   const d=currentDate;const dayData=allData[d]||{};const now=new Date().toLocaleString('ja-JP');
   let secHtml='';
   CATS.forEach(cat=>{
-    const rows=(dayData[cat.id]||[]).filter(r=>r.site||cat.times.some(t=>r[t.key])||(r.trucks&&r.trucks.length));
+    const rows=(dayData[cat.id]||[]).filter(r=>r.site||cat.times.some(t=>{const v=r[t.key];return Array.isArray(v)?v.length:v;})||(r.trucks&&r.trucks.length));
     if(!rows.length)return;
     let ths=cat.times.map(t=>`<th style="background:#f0ede6;padding:8px 5px;border:1px solid #ccc;font-size:11px;white-space:nowrap;font-weight:500">${t.label}</th>`).join('');
     let trs=rows.map(row=>{
       const truckStr=(row.trucks&&row.trucks.length)?row.trucks.map(t=>`🚛${t}`).join(' '):'';
-      let tds=cat.times.map(t=>{const w=row[t.key]||'';
-        if(w==='→')return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center;color:#aaa">→</td>`;
-        if(w)return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center;background:#e6f4e6;font-weight:600;font-size:13px">${w}</td>`;
-        return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center"></td>`;
+      let tds=cat.times.map(t=>{
+        const v=row[t.key];
+        const names=Array.isArray(v)?v:v?[v]:[];
+        if(!names.length)return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center"></td>`;
+        return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center;background:#e6f4e6;font-size:12px">${names.map(n=>`<div style="font-weight:600">${n}</div>`).join('')}</td>`;
       }).join('');
       return`<tr><td style="padding:8px 10px;border:1px solid #ddd;font-size:13px;background:#fafaf8">
         <div style="font-weight:700">${row.site||''}</div>
