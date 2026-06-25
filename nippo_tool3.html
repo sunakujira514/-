@@ -17,11 +17,20 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .add-row-btn{font-size:12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:5px;padding:5px 12px;cursor:pointer;color:#fff}
 .row-block{border-bottom:1px solid #eee;padding:12px 14px}
 .row-block:last-child{border-bottom:none}
-.row-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.row-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .site-input{flex:1;font-size:15px;padding:9px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;color:#222;-webkit-appearance:none;width:100%}
 .site-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
 .del-row-btn{flex-shrink:0;background:transparent;border:1px solid #ddd;border-radius:6px;padding:6px 10px;font-size:16px;cursor:pointer;color:#bbb;line-height:1}
 .del-row-btn:active{color:#c0392b;border-color:#c0392b}
+/* トラック選択 */
+.truck-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.truck-label{font-size:12px;color:#888;flex-shrink:0}
+.truck-tags{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.truck-tag{display:flex;align-items:center;gap:4px;background:#fff3e0;border:1px solid #f0a060;border-radius:16px;padding:3px 10px;font-size:12px;color:#c06000}
+.truck-tag-del{background:transparent;border:none;cursor:pointer;color:#c09060;font-size:13px;line-height:1}
+.truck-tag-del:active{color:#c0392b}
+.truck-pick-btn{font-size:12px;background:#fff3e0;border:1px solid #f0a060;border-radius:16px;padding:4px 10px;cursor:pointer;color:#c06000}
+.truck-pick-btn:active{background:#ffe0b0}
 .time-list{display:flex;flex-direction:column;gap:10px}
 .time-item{display:flex;align-items:center;gap:8px}
 .time-label{font-size:12px;color:#888;flex-shrink:0;width:140px}
@@ -35,7 +44,6 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .btn-pdf{flex:1;padding:13px;border-radius:8px;border:none;background:#e8734a;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
 .btn-export{flex:1;padding:13px;border-radius:8px;border:none;background:#2a7ae2;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
 .notice{position:fixed;bottom:95px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;display:none;white-space:nowrap;z-index:100}
-/* 保存モーダル */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
 .modal{background:#fff;border-radius:14px;padding:24px 20px;max-width:420px;width:100%}
@@ -45,21 +53,25 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .modal-btns{display:flex;gap:10px}
 .modal-btn-copy{flex:1;padding:12px;border-radius:8px;border:none;background:#2a7ae2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .modal-btn-close{flex:1;padding:12px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#333;font-size:14px;cursor:pointer;font-family:inherit}
-/* メンバー選択ポップアップ */
-.member-popup-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:flex-end;justify-content:center}
-.member-popup-overlay.show{display:flex}
-.member-popup{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:640px;padding:0 0 20px;max-height:70vh;display:flex;flex-direction:column}
-.member-popup-head{padding:16px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee}
-.member-popup-title{font-size:15px;font-weight:700;color:#333}
-.member-popup-close{background:transparent;border:none;font-size:22px;cursor:pointer;color:#aaa;padding:0 4px;line-height:1}
-.member-search{padding:10px 16px;border-bottom:1px solid #eee}
-.member-search input{width:100%;font-size:15px;padding:9px 12px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;-webkit-appearance:none}
-.member-search input:focus{outline:none;border-color:#2a7ae2}
-.member-list{overflow-y:auto;flex:1}
-.member-list-item{padding:14px 20px;border-bottom:1px solid #f0f0f0;font-size:15px;cursor:pointer;color:#333}
-.member-list-item:active{background:#f0f7ff}
-.member-list-item.clear{color:#e8734a;font-weight:500}
-.member-list-empty{padding:20px;text-align:center;color:#aaa;font-size:14px}
+/* メンバーポップアップ */
+.popup-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.popup-overlay.show{display:flex}
+.popup-sheet{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:640px;padding:0 0 20px;max-height:75vh;display:flex;flex-direction:column}
+.popup-head{padding:16px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;flex-shrink:0}
+.popup-title{font-size:15px;font-weight:700;color:#333}
+.popup-close{background:transparent;border:none;font-size:22px;cursor:pointer;color:#aaa;padding:0 4px;line-height:1}
+.popup-search{padding:10px 16px;border-bottom:1px solid #eee;flex-shrink:0}
+.popup-search input{width:100%;font-size:15px;padding:9px 12px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;-webkit-appearance:none}
+.popup-search input:focus{outline:none;border-color:#2a7ae2}
+.popup-list{overflow-y:auto;flex:1}
+.popup-list-item{padding:14px 20px;border-bottom:1px solid #f0f0f0;font-size:15px;cursor:pointer;color:#333;display:flex;justify-content:space-between;align-items:center}
+.popup-list-item:active{background:#f0f7ff}
+.popup-list-item .yomi{font-size:12px;color:#aaa}
+.popup-list-item.clear{color:#e8734a;font-weight:500}
+.popup-list-empty{padding:20px;text-align:center;color:#aaa;font-size:14px}
+/* トラックポップアップ */
+.truck-popup-item{padding:14px 20px;border-bottom:1px solid #f0f0f0;font-size:15px;cursor:pointer;color:#333}
+.truck-popup-item:active{background:#fff3e0}
 /* 履歴 */
 .history-box{background:#fff;border-radius:10px;margin-bottom:16px;border:1px solid #ddd;overflow:hidden}
 .history-head{background:#777;color:#fff;padding:9px 14px;font-size:13px;font-weight:700}
@@ -74,22 +86,33 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .member-toggle-btn{font-size:12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:5px;padding:4px 10px;cursor:pointer;color:#fff}
 .member-body{display:none;padding:12px 14px}
 .member-body.open{display:block}
-.member-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;min-height:24px}
-.member-tag{display:flex;align-items:center;gap:6px;background:#f0f7f0;border:1px solid #b0d0b0;border-radius:20px;padding:5px 12px;font-size:13px}
-.member-tag-del{background:transparent;border:none;cursor:pointer;color:#999;font-size:14px;line-height:1}
+.member-section-title{font-size:12px;font-weight:700;color:#666;margin:10px 0 6px}
+.member-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;min-height:20px}
+.member-tag{display:flex;align-items:center;gap:4px;background:#f0f7f0;border:1px solid #b0d0b0;border-radius:20px;padding:5px 10px;font-size:13px}
+.member-tag-name{font-weight:500}
+.member-tag-yomi{font-size:11px;color:#888}
+.member-tag-del{background:transparent;border:none;cursor:pointer;color:#999;font-size:14px;line-height:1;margin-left:2px}
 .member-tag-del:active{color:#c0392b}
-.member-add-row{display:flex;gap:8px}
-.member-add-input{flex:1;font-size:14px;padding:8px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;-webkit-appearance:none}
+.truck-reg-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;min-height:20px}
+.truck-reg-tag{display:flex;align-items:center;gap:4px;background:#fff3e0;border:1px solid #f0a060;border-radius:20px;padding:5px 10px;font-size:13px}
+.truck-reg-tag-del{background:transparent;border:none;cursor:pointer;color:#c09060;font-size:14px;line-height:1;margin-left:2px}
+.truck-reg-tag-del:active{color:#c0392b}
+.member-add-row{display:flex;flex-direction:column;gap:8px}
+.member-add-inputs{display:flex;gap:8px}
+.member-add-input{flex:1;font-size:14px;padding:8px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;-webkit-appearance:none;min-width:0}
 .member-add-input:focus{outline:none;border-color:#5a7a5a}
 .member-add-btn{padding:8px 14px;border-radius:8px;border:none;background:#5a7a5a;color:#fff;font-size:13px;cursor:pointer;font-family:inherit;font-weight:700;white-space:nowrap}
+.truck-add-btn{padding:8px 14px;border-radius:8px;border:none;background:#c07030;color:#fff;font-size:13px;cursor:pointer;font-family:inherit;font-weight:700;white-space:nowrap}
+.member-add-hint{font-size:11px;color:#aaa;padding-left:2px}
 @media print{
   body{background:#fff}.app{padding:10px}
-  .actions,.notice,.modal-overlay,.member-popup-overlay,.add-row-btn,.del-row-btn,.history-box,.member-box,.pick-btn{display:none!important}
+  .actions,.notice,.modal-overlay,.popup-overlay,.add-row-btn,.del-row-btn,.history-box,.member-box,.pick-btn,.truck-pick-btn,.truck-tag-del{display:none!important}
   .cat{border:1px solid #999;margin-bottom:12px;break-inside:avoid}
   .cat-head{background:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:7px 12px;font-size:13px}
   .row-block{padding:8px 12px}.time-label{font-size:11px}
   .time-input{border:none;background:transparent;font-size:12px;padding:4px 6px}
   .site-input{border:none;background:transparent;font-size:13px;font-weight:700;padding:4px 6px}
+  .truck-row{margin-bottom:6px}
   .print-header{display:flex!important;align-items:baseline;gap:12px;margin-bottom:12px;border-bottom:2px solid #333;padding-bottom:8px}
 }
 .print-header{display:none}
@@ -131,40 +154,60 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 </div>
 
 <!-- メンバー選択ポップアップ -->
-<div class="member-popup-overlay" id="memberPopupOverlay" onclick="closeMemberPopup(event)">
-  <div class="member-popup">
-    <div class="member-popup-head">
-      <span class="member-popup-title">👤 メンバーを選択</span>
-      <button class="member-popup-close" onclick="closeMemberPopupDirect()">×</button>
+<div class="popup-overlay" id="memberPopupOverlay" onclick="closePopupByOverlay(event,'memberPopupOverlay')">
+  <div class="popup-sheet">
+    <div class="popup-head">
+      <span class="popup-title">👤 メンバーを選択</span>
+      <button class="popup-close" onclick="closePopup('memberPopupOverlay')">×</button>
     </div>
-    <div class="member-search">
-      <input type="text" id="memberSearchInput" placeholder="名前で絞り込み…" oninput="renderMemberList()">
+    <div class="popup-search">
+      <input type="text" id="memberSearchInput" placeholder="名前・読みで絞り込み…" oninput="renderMemberList()">
     </div>
-    <div class="member-list" id="memberListInPopup"></div>
+    <div class="popup-list" id="memberListInPopup"></div>
+  </div>
+</div>
+
+<!-- トラック選択ポップアップ -->
+<div class="popup-overlay" id="truckPopupOverlay" onclick="closePopupByOverlay(event,'truckPopupOverlay')">
+  <div class="popup-sheet">
+    <div class="popup-head">
+      <span class="popup-title">🚛 トラックを選択</span>
+      <button class="popup-close" onclick="closePopup('truckPopupOverlay')">×</button>
+    </div>
+    <div class="popup-list" id="truckListInPopup"></div>
   </div>
 </div>
 
 <script>
-const TIMES=[
+const TIMES_ALL=[
   {label:'8:00〜10:00',key:'t1'},
   {label:'10:30〜12:00',key:'t2'},
   {label:'13:00〜15:00',key:'t3'},
   {label:'15:30〜17:00',key:'t4'},
   {label:'17:00〜20:00(残業)',key:'t5'}
 ];
+// 搬入運搬は残業なし
+const TIMES_NO_OT=[
+  {label:'8:00〜10:00',key:'t1'},
+  {label:'10:30〜12:00',key:'t2'},
+  {label:'13:00〜15:00',key:'t3'},
+  {label:'15:30〜17:00',key:'t4'}
+];
 const CATS=[
-  {id:'dai1',name:'第一加工場'},
-  {id:'dai2',name:'第二加工場'},
-  {id:'han', name:'搬入運搬'},
-  {id:'hiroi',name:'拾い出し（加工場）'}
+  {id:'dai1',name:'第一加工場',times:TIMES_ALL},
+  {id:'dai2',name:'第二加工場',times:TIMES_ALL},
+  {id:'han', name:'搬入運搬',  times:TIMES_NO_OT},
+  {id:'hiroi',name:'拾い出し（加工場）',times:TIMES_ALL}
 ];
 
 let allData={};
 let members=[];
+let trucks=[];
 let currentDate='';
 let pickTarget={catId:null,ri:null,key:null};
+let truckTarget={catId:null,ri:null};
 
-function newRow(){return{site:'',t1:'',t2:'',t3:'',t4:'',t5:''};}
+function newRow(){return{site:'',trucks:[],t1:'',t2:'',t3:'',t4:'',t5:''};}
 function newDayData(d){const obj={date:d};CATS.forEach(c=>{obj[c.id]=[newRow()];});return obj;}
 function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
@@ -174,15 +217,16 @@ function loadFromHash(){
   try{
     const json=decodeURIComponent(atob(hash.slice(1)));
     const parsed=JSON.parse(json);
-    if(parsed.allData){allData=parsed.allData;}
-    if(parsed.members){members=parsed.members;}
+    if(parsed.allData)allData=parsed.allData;
+    if(parsed.members)members=parsed.members;
+    if(parsed.trucks)trucks=parsed.trucks;
     return true;
   }catch(e){}
   return false;
 }
 
 function buildUrl(){
-  const payload=JSON.stringify({allData:allData,members:members});
+  const payload=JSON.stringify({allData,members,trucks});
   const encoded=btoa(encodeURIComponent(payload));
   return location.origin+location.pathname+'#'+encoded;
 }
@@ -205,15 +249,14 @@ function getCurrentDayData(){
 function loadDay(d){
   currentDate=d;
   document.getElementById('reportDate').value=d;
-  if(!allData[d]){allData[d]=newDayData(d);}
-  renderCats();
-  renderHistory();
+  if(!allData[d])allData[d]=newDayData(d);
+  renderCats();renderHistory();
 }
 
 function renderHistory(){
   const dates=Object.keys(allData).sort().reverse();
   const box=document.getElementById('historyBox');
-  if(dates.length===0){box.innerHTML='';return;}
+  if(!dates.length){box.innerHTML='';return;}
   let items=dates.map(d=>{
     const active=d===currentDate?'style="background:#f0f7ff"':'';
     return`<div class="history-item" ${active} onclick="loadDay('${d}')"><span class="history-date">📅 ${d}</span><span class="history-arrow">›</span></div>`;
@@ -223,43 +266,67 @@ function renderHistory(){
 
 function renderMembers(){
   const box=document.getElementById('memberBox');
-  const tags=members.map((m,i)=>`<div class="member-tag">${esc(m)}<button class="member-tag-del" onclick="delMember(${i})">×</button></div>`).join('');
+  const memberTags=members.map((m,i)=>`
+    <div class="member-tag">
+      <span class="member-tag-name">${esc(m.name)}</span>
+      ${m.yomi?`<span class="member-tag-yomi">（${esc(m.yomi)}）</span>`:''}
+      <button class="member-tag-del" onclick="delMember(${i})">×</button>
+    </div>`).join('');
+  const truckTags=trucks.map((t,i)=>`
+    <div class="truck-reg-tag">
+      🚛 ${esc(t)}
+      <button class="truck-reg-tag-del" onclick="delTruck(${i})">×</button>
+    </div>`).join('');
   box.innerHTML=`<div class="member-box">
     <div class="member-head" onclick="toggleMemberBody()">
-      <span>👥 メンバー登録（${members.length}人）</span>
+      <span>👥 メンバー・トラック登録</span>
       <button class="member-toggle-btn" onclick="event.stopPropagation();toggleMemberBody()">▼ 開閉</button>
     </div>
     <div class="member-body" id="memberBody">
-      <div class="member-tags">${tags||'<span style="font-size:13px;color:#aaa">まだ登録されていません</span>'}</div>
+      <div class="member-section-title">👤 メンバー（${members.length}人）</div>
+      <div class="member-tags">${memberTags||'<span style="font-size:13px;color:#aaa">未登録</span>'}</div>
       <div class="member-add-row">
-        <input class="member-add-input" type="text" id="memberInput" placeholder="名前を入力して追加">
-        <button class="member-add-btn" onclick="addMember()">追加</button>
+        <p class="member-add-hint">名前と読み仮名を入力してください</p>
+        <div class="member-add-inputs">
+          <input class="member-add-input" type="text" id="memberNameInput" placeholder="名前">
+          <input class="member-add-input" type="text" id="memberYomiInput" placeholder="読み">
+          <button class="member-add-btn" onclick="addMember()">追加</button>
+        </div>
+      </div>
+      <div class="member-section-title" style="margin-top:16px">🚛 トラック（${trucks.length}台）</div>
+      <div class="truck-reg-tags">${truckTags||'<span style="font-size:13px;color:#aaa">未登録</span>'}</div>
+      <div class="member-add-row">
+        <div class="member-add-inputs">
+          <input class="member-add-input" type="text" id="truckInput" placeholder="例：4tトラック、ユニック">
+          <button class="truck-add-btn" onclick="addTruck()">追加</button>
+        </div>
       </div>
     </div>
   </div>`;
-  document.getElementById('memberInput').addEventListener('keydown',function(e){if(e.key==='Enter')addMember();});
+  document.getElementById('memberYomiInput').addEventListener('keydown',function(e){if(e.key==='Enter')addMember();});
+  document.getElementById('memberNameInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('memberYomiInput').focus();});
+  document.getElementById('truckInput').addEventListener('keydown',function(e){if(e.key==='Enter')addTruck();});
 }
 
 function toggleMemberBody(){
-  const b=document.getElementById('memberBody');
-  if(b)b.classList.toggle('open');
+  const b=document.getElementById('memberBody');if(b)b.classList.toggle('open');
 }
-
 function addMember(){
-  const inp=document.getElementById('memberInput');
+  const ni=document.getElementById('memberNameInput'),yi=document.getElementById('memberYomiInput');
+  const name=ni.value.trim(),yomi=yi.value.trim();
+  if(!name||members.some(m=>m.name===name)){ni.value='';yi.value='';return;}
+  members.push({name,yomi});ni.value='';yi.value='';renderMembers();
+}
+function delMember(i){members.splice(i,1);renderMembers();}
+function addTruck(){
+  const inp=document.getElementById('truckInput');
   const name=inp.value.trim();
-  if(!name||members.includes(name)){inp.value='';return;}
-  members.push(name);
-  inp.value='';
-  renderMembers();
+  if(!name||trucks.includes(name)){inp.value='';return;}
+  trucks.push(name);inp.value='';renderMembers();
 }
+function delTruck(i){trucks.splice(i,1);renderMembers();}
 
-function delMember(i){
-  members.splice(i,1);
-  renderMembers();
-}
-
-// ポップアップを開く
+/* メンバーポップアップ */
 function openMemberPopup(catId,ri,key){
   pickTarget={catId,ri,key};
   document.getElementById('memberSearchInput').value='';
@@ -267,34 +334,65 @@ function openMemberPopup(catId,ri,key){
   document.getElementById('memberPopupOverlay').classList.add('show');
   setTimeout(()=>document.getElementById('memberSearchInput').focus(),100);
 }
-
 function renderMemberList(){
-  const q=document.getElementById('memberSearchInput').value.trim();
-  const filtered=q?members.filter(m=>m.includes(q)):members;
+  const q=document.getElementById('memberSearchInput').value.trim().toLowerCase();
+  const filtered=q?members.filter(m=>m.name.includes(q)||(m.yomi&&m.yomi.includes(q))):members;
   const list=document.getElementById('memberListInPopup');
-  let html='<div class="member-list-item clear" onclick="pickMember(\'\')">✕ クリア（空にする）</div>';
-  if(filtered.length===0){
-    html+='<div class="member-list-empty">該当するメンバーがいません</div>';
-  }else{
-    html+=filtered.map(m=>`<div class="member-list-item" onclick="pickMember('${esc(m)}')">${esc(m)}</div>`).join('');
-  }
+  let html='<div class="popup-list-item clear" onclick="pickMember(\'\')">✕ クリア（空にする）</div>';
+  if(!filtered.length){html+='<div class="popup-list-empty">該当するメンバーがいません</div>';}
+  else{html+=filtered.map(m=>`<div class="popup-list-item" onclick="pickMember('${esc(m.name)}')">${esc(m.name)}${m.yomi?`<span class="yomi">${esc(m.yomi)}</span>`:''}</div>`).join('');}
   list.innerHTML=html;
 }
-
 function pickMember(name){
   const{catId,ri,key}=pickTarget;
-  if(catId!==null){
-    setVal(catId,ri,key,name);
-    renderCats();
-  }
-  closeMemberPopupDirect();
+  if(catId!==null){setVal(catId,ri,key,name);renderCats();}
+  closePopup('memberPopupOverlay');
 }
 
-function closeMemberPopup(e){
-  if(e.target===document.getElementById('memberPopupOverlay'))closeMemberPopupDirect();
+/* トラックポップアップ */
+function openTruckPopup(catId,ri){
+  truckTarget={catId,ri};
+  renderTruckList();
+  document.getElementById('truckPopupOverlay').classList.add('show');
 }
-function closeMemberPopupDirect(){
-  document.getElementById('memberPopupOverlay').classList.remove('show');
+function renderTruckList(){
+  const row=getRow(truckTarget.catId,truckTarget.ri);
+  const selected=row?row.trucks||[]:[];
+  const list=document.getElementById('truckListInPopup');
+  if(!trucks.length){list.innerHTML='<div class="popup-list-empty">トラックが登録されていません<br>メンバー・トラック登録から追加してください</div>';return;}
+  let html=trucks.map(t=>{
+    const checked=selected.includes(t);
+    return`<div class="truck-popup-item" onclick="toggleTruck('${esc(t)}')" style="${checked?'background:#fff3e0;font-weight:700':''}">
+      ${checked?'✅':'⬜'} 🚛 ${esc(t)}
+    </div>`;
+  }).join('');
+  html+='<div class="truck-popup-item" style="color:#e8734a" onclick="clearTrucks()">✕ クリア（全て外す）</div>';
+  list.innerHTML=html;
+}
+function toggleTruck(name){
+  const{catId,ri}=truckTarget;
+  if(!allData[currentDate])allData[currentDate]=newDayData(currentDate);
+  const row=allData[currentDate][catId][ri];
+  if(!row.trucks)row.trucks=[];
+  const idx=row.trucks.indexOf(name);
+  if(idx>=0)row.trucks.splice(idx,1);
+  else row.trucks.push(name);
+  renderTruckList();
+  renderCats();
+}
+function clearTrucks(){
+  const{catId,ri}=truckTarget;
+  if(allData[currentDate]&&allData[currentDate][catId]&&allData[currentDate][catId][ri])
+    allData[currentDate][catId][ri].trucks=[];
+  renderTruckList();renderCats();
+}
+
+function closePopup(id){document.getElementById(id).classList.remove('show');}
+function closePopupByOverlay(e,id){if(e.target===document.getElementById(id))closePopup(id);}
+
+function getRow(catId,ri){
+  if(!allData[currentDate]||!allData[currentDate][catId])return null;
+  return allData[currentDate][catId][ri]||null;
 }
 
 function renderCats(){
@@ -303,14 +401,16 @@ function renderCats(){
   const dayData=allData[currentDate]||newDayData(currentDate);
   CATS.forEach(cat=>{
     const rows=dayData[cat.id]||[newRow()];
+    const times=cat.times;
     let rowsHtml=rows.map((row,ri)=>{
-      let timeItems=TIMES.map(t=>`
+      const selectedTrucks=row.trucks||[];
+      const truckTagsHtml=selectedTrucks.map(t=>`<div class="truck-tag">🚛 ${esc(t)}<button class="truck-tag-del" onclick="removeTruckFromRow('${cat.id}',${ri},'${esc(t)}')">×</button></div>`).join('');
+      let timeItems=times.map(t=>`
         <div class="time-item">
           <span class="time-label">${t.label}</span>
           <div class="time-input-wrap">
             <input class="time-input" type="text" value="${esc(row[t.key]||'')}" placeholder="名前を入力"
-              oninput="setVal('${cat.id}',${ri},'${t.key}',this.value)"
-              autocomplete="off">
+              oninput="setVal('${cat.id}',${ri},'${t.key}',this.value)" autocomplete="off">
             <button class="pick-btn" onclick="openMemberPopup('${cat.id}',${ri},'${t.key}')">一覧</button>
           </div>
         </div>`).join('');
@@ -319,6 +419,11 @@ function renderCats(){
         <div class="row-top">
           <input class="site-input" type="text" value="${esc(row.site||'')}" placeholder="現場名を入力" oninput="setVal('${cat.id}',${ri},'site',this.value)">
           ${delBtn}
+        </div>
+        <div class="truck-row">
+          <span class="truck-label">🚛 トラック：</span>
+          <div class="truck-tags">${truckTagsHtml}</div>
+          <button class="truck-pick-btn" onclick="openTruckPopup('${cat.id}',${ri})">選択</button>
         </div>
         <div class="time-list">${timeItems}</div>
       </div>`;
@@ -330,6 +435,14 @@ function renderCats(){
   });
 }
 
+function removeTruckFromRow(catId,ri,name){
+  const row=getRow(catId,ri);
+  if(!row||!row.trucks)return;
+  const idx=row.trucks.indexOf(name);
+  if(idx>=0)row.trucks.splice(idx,1);
+  renderCats();
+}
+
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function setVal(catId,ri,key,val){
   if(!allData[currentDate])allData[currentDate]=newDayData(currentDate);
@@ -339,15 +452,11 @@ function setVal(catId,ri,key,val){
 }
 function addRow(catId){
   if(!allData[currentDate])allData[currentDate]=newDayData(currentDate);
-  allData[currentDate][catId].push(newRow());
-  renderCats();
+  allData[currentDate][catId].push(newRow());renderCats();
 }
 function delRow(catId,ri){allData[currentDate][catId].splice(ri,1);renderCats();}
 
-function closeModal(){
-  document.getElementById('modalOverlay').classList.remove('show');
-  showNotice('✓ ブックマークに保存してください');
-}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');showNotice('✓ ブックマークに保存してください');}
 function copyUrl(){
   const url=document.getElementById('modalUrl').textContent;
   if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>{showNotice('✓ URLをコピーしました！');closeModal();});}
@@ -363,18 +472,24 @@ function exportHTML(){
   const d=currentDate;const dayData=allData[d]||{};const now=new Date().toLocaleString('ja-JP');
   let secHtml='';
   CATS.forEach(cat=>{
-    const rows=(dayData[cat.id]||[]).filter(r=>r.site||TIMES.some(t=>r[t.key]));
+    const rows=(dayData[cat.id]||[]).filter(r=>r.site||cat.times.some(t=>r[t.key])||( r.trucks&&r.trucks.length));
     if(!rows.length)return;
-    let ths=TIMES.map(t=>`<th style="background:#f0ede6;padding:8px 5px;border:1px solid #ccc;font-size:11px;white-space:nowrap;font-weight:500">${t.label}</th>`).join('');
+    let ths=cat.times.map(t=>`<th style="background:#f0ede6;padding:8px 5px;border:1px solid #ccc;font-size:11px;white-space:nowrap;font-weight:500">${t.label}</th>`).join('');
     let trs=rows.map(row=>{
-      let tds=TIMES.map(t=>{const w=row[t.key]||'';
+      const truckStr=(row.trucks&&row.trucks.length)?row.trucks.map(t=>`🚛${t}`).join(' '):'';
+      let tds=cat.times.map(t=>{const w=row[t.key]||'';
         if(w==='→')return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center;color:#aaa">→</td>`;
         if(w)return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center;background:#e6f4e6;font-weight:600;font-size:13px">${w}</td>`;
         return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center"></td>`;
       }).join('');
-      return`<tr><td style="padding:8px 10px;border:1px solid #ddd;font-weight:600;font-size:13px;background:#fafaf8">${row.site||''}</td>${tds}</tr>`;
+      return`<tr>
+        <td style="padding:8px 10px;border:1px solid #ddd;font-size:13px;background:#fafaf8">
+          <div style="font-weight:700">${row.site||''}</div>
+          ${truckStr?`<div style="font-size:11px;color:#c07030;margin-top:3px">${truckStr}</div>`:''}
+        </td>${tds}
+      </tr>`;
     }).join('');
-    secHtml+=`<div style="margin-bottom:1.5rem"><div style="background:#333;color:#fff;padding:8px 14px;font-size:14px;font-weight:700;border-radius:5px 5px 0 0">${cat.name}</div><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;background:#fff;min-width:500px"><thead><tr><th style="background:#f0ede6;padding:8px 10px;border:1px solid #ccc;text-align:left;min-width:100px;font-size:12px">現場名</th>${ths}</tr></thead><tbody>${trs}</tbody></table></div></div>`;
+    secHtml+=`<div style="margin-bottom:1.5rem"><div style="background:#333;color:#fff;padding:8px 14px;font-size:14px;font-weight:700;border-radius:5px 5px 0 0">${cat.name}</div><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;background:#fff;min-width:500px"><thead><tr><th style="background:#f0ede6;padding:8px 10px;border:1px solid #ccc;text-align:left;min-width:110px;font-size:12px">現場名</th>${ths}</tr></thead><tbody>${trs}</tbody></table></div></div>`;
   });
   if(!secHtml){alert('データが入力されていません。');return;}
   const html=`<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>作業日報 ${d}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f4f2ed;color:#222}.container{max-width:980px;margin:0 auto;padding:1.5rem 1rem 3rem}header{display:flex;align-items:baseline;gap:16px;margin-bottom:1.5rem;border-bottom:2px solid #333;padding-bottom:10px}h1{font-size:20px;font-weight:700}.date-lbl{font-size:17px;color:#555}.footer{margin-top:2rem;font-size:11px;color:#aaa;text-align:right}</style></head><body><div class="container"><header><h1>作業日報</h1><span class="date-lbl">${d}</span></header>${secHtml}<div class="footer">作成：${now}</div></div></body></html>`;
@@ -385,18 +500,13 @@ function exportHTML(){
   showNotice('✓ 作成しました！');
 }
 
-// 初期化
 loadFromHash();
 const td=today();
 currentDate=td;
 if(!allData[td])allData[td]=newDayData(td);
 document.getElementById('reportDate').value=td;
-renderMembers();
-renderCats();
-renderHistory();
-document.getElementById('reportDate').addEventListener('change',function(){
-  if(this.value)loadDay(this.value);
-});
+renderMembers();renderCats();renderHistory();
+document.getElementById('reportDate').addEventListener('change',function(){if(this.value)loadDay(this.value);});
 </script>
 </body>
 </html>
