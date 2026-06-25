@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f0ede6;color:#222;font-size:16px}
-.app{max-width:640px;margin:0 auto;padding:16px 12px 110px}
+.app{max-width:640px;margin:0 auto;padding:16px 12px 140px}
 h1{font-size:20px;font-weight:700;margin-bottom:16px}
 .date-row{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .date-row label{font-size:14px;color:#666;flex-shrink:0}
@@ -45,7 +45,9 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .time-manual-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
 .time-manual-add{padding:6px 8px;border-radius:8px;border:none;background:#5a7a5a;color:#fff;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .time-manual-add:active{background:#3a5a3a}
-.actions{position:fixed;bottom:0;left:0;right:0;background:#f0ede6;border-top:1px solid #ddd;padding:10px 12px;display:flex;gap:8px}
+.actions{position:fixed;bottom:0;left:0;right:0;background:#f0ede6;border-top:1px solid #ddd;padding:6px 12px;display:flex;flex-direction:column;gap:6px}
+.actions-row{display:flex;gap:8px}
+.btn-copy{flex:1;padding:10px;border-radius:8px;border:1px solid #a0a0d0;background:#f0f0ff;cursor:pointer;font-size:13px;color:#333;font-family:inherit}
 .btn-save{flex:1;padding:13px;border-radius:8px;border:1px solid #bbb;background:#fff;cursor:pointer;font-size:13px;color:#333;font-family:inherit}
 .btn-pdf{flex:1;padding:13px;border-radius:8px;border:none;background:#e8734a;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
 .btn-export{flex:1;padding:13px;border-radius:8px;border:none;background:#2a7ae2;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
@@ -137,9 +139,14 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
   <div id="cats"></div>
 </div>
 <div class="actions">
-  <button class="btn-save" onclick="saveData()">💾 保存</button>
-  <button class="btn-pdf" onclick="printPDF()">🖨️ PDF</button>
-  <button class="btn-export" onclick="exportHTML()">📤 共有</button>
+  <div class="actions-row">
+    <button class="btn-save" onclick="saveData()">💾 保存</button>
+    <button class="btn-pdf" onclick="printPDF()">🖨️ PDF</button>
+    <button class="btn-export" onclick="exportHTML()">📤 共有</button>
+  </div>
+  <div class="actions-row">
+    <button class="btn-copy" onclick="copyPrevDay()">📋 前日の内容をコピー</button>
+  </div>
 </div>
 <div class="notice" id="notice"></div>
 <div class="modal-overlay" id="modalOverlay">
@@ -540,6 +547,23 @@ function addRow(catId){
 }
 function delRow(catId,ri){allData[currentDate][catId].splice(ri,1);renderCats();}
 
+function copyPrevDay(){
+  // 前日の日付を計算
+  const cur=new Date(currentDate);
+  cur.setDate(cur.getDate()-1);
+  const prev=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0')+'-'+String(cur.getDate()).padStart(2,'0');
+  if(!allData[prev]){
+    showNotice('⚠️ 前日（'+prev+'）の保存データがありません');
+    return;
+  }
+  if(!confirm(prev+'のデータを'+currentDate+'にコピーしますか？\n現在の入力内容は上書きされます。')){return;}
+  // ディープコピー
+  const copied=JSON.parse(JSON.stringify(allData[prev]));
+  copied.date=currentDate;
+  allData[currentDate]=copied;
+  renderCats();
+  showNotice('✓ '+prev+'のデータをコピーしました');
+}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('show');showNotice('✓ ブックマークに保存してください');}
 function copyUrl(){
   const url=document.getElementById('modalUrl').textContent;
