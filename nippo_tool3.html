@@ -22,18 +22,20 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .site-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
 .del-row-btn{flex-shrink:0;background:transparent;border:1px solid #ddd;border-radius:6px;padding:6px 10px;font-size:16px;cursor:pointer;color:#bbb;line-height:1}
 .del-row-btn:active{color:#c0392b;border-color:#c0392b}
-.time-list{display:flex;flex-direction:column;gap:8px}
+.time-list{display:flex;flex-direction:column;gap:10px}
 .time-item{display:flex;align-items:center;gap:8px}
 .time-label{font-size:12px;color:#888;flex-shrink:0;width:140px}
-.time-input{flex:1;font-size:15px;padding:8px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;color:#222;-webkit-appearance:none}
+.time-input-wrap{flex:1;display:flex;gap:6px}
+.time-input{flex:1;font-size:15px;padding:8px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;color:#222;-webkit-appearance:none;min-width:0}
 .time-input:focus{outline:none;border-color:#2a7ae2;background:#fff}
+.pick-btn{flex-shrink:0;padding:8px 10px;border-radius:8px;border:1px solid #b0d0b0;background:#f0f7f0;cursor:pointer;font-size:13px;white-space:nowrap;color:#5a7a5a}
+.pick-btn:active{background:#d0ead0}
 .actions{position:fixed;bottom:0;left:0;right:0;background:#f0ede6;border-top:1px solid #ddd;padding:10px 12px;display:flex;gap:8px}
 .btn-save{flex:1;padding:13px;border-radius:8px;border:1px solid #bbb;background:#fff;cursor:pointer;font-size:13px;color:#333;font-family:inherit}
 .btn-pdf{flex:1;padding:13px;border-radius:8px;border:none;background:#e8734a;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
-.btn-pdf:active{background:#c05a35}
 .btn-export{flex:1;padding:13px;border-radius:8px;border:none;background:#2a7ae2;cursor:pointer;font-size:13px;color:#fff;font-family:inherit;font-weight:700}
-.btn-export:active{background:#1a5fba}
 .notice{position:fixed;bottom:95px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;display:none;white-space:nowrap;z-index:100}
+/* 保存モーダル */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
 .modal{background:#fff;border-radius:14px;padding:24px 20px;max-width:420px;width:100%}
@@ -43,6 +45,22 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .modal-btns{display:flex;gap:10px}
 .modal-btn-copy{flex:1;padding:12px;border-radius:8px;border:none;background:#2a7ae2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .modal-btn-close{flex:1;padding:12px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#333;font-size:14px;cursor:pointer;font-family:inherit}
+/* メンバー選択ポップアップ */
+.member-popup-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.member-popup-overlay.show{display:flex}
+.member-popup{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:640px;padding:0 0 20px;max-height:70vh;display:flex;flex-direction:column}
+.member-popup-head{padding:16px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee}
+.member-popup-title{font-size:15px;font-weight:700;color:#333}
+.member-popup-close{background:transparent;border:none;font-size:22px;cursor:pointer;color:#aaa;padding:0 4px;line-height:1}
+.member-search{padding:10px 16px;border-bottom:1px solid #eee}
+.member-search input{width:100%;font-size:15px;padding:9px 12px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;-webkit-appearance:none}
+.member-search input:focus{outline:none;border-color:#2a7ae2}
+.member-list{overflow-y:auto;flex:1}
+.member-list-item{padding:14px 20px;border-bottom:1px solid #f0f0f0;font-size:15px;cursor:pointer;color:#333}
+.member-list-item:active{background:#f0f7ff}
+.member-list-item.clear{color:#e8734a;font-weight:500}
+.member-list-empty{padding:20px;text-align:center;color:#aaa;font-size:14px}
+/* 履歴 */
 .history-box{background:#fff;border-radius:10px;margin-bottom:16px;border:1px solid #ddd;overflow:hidden}
 .history-head{background:#777;color:#fff;padding:9px 14px;font-size:13px;font-weight:700}
 .history-item{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer}
@@ -50,15 +68,26 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 .history-item:active{background:#f4f2ed}
 .history-date{font-size:14px;color:#333;font-weight:500}
 .history-arrow{color:#bbb;font-size:18px}
-.history-empty{padding:12px 14px;font-size:13px;color:#aaa}
+/* メンバー管理 */
+.member-box{background:#fff;border-radius:10px;margin-bottom:16px;border:1px solid #ddd;overflow:hidden}
+.member-head{background:#5a7a5a;color:#fff;padding:10px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.member-toggle-btn{font-size:12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:5px;padding:4px 10px;cursor:pointer;color:#fff}
+.member-body{display:none;padding:12px 14px}
+.member-body.open{display:block}
+.member-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;min-height:24px}
+.member-tag{display:flex;align-items:center;gap:6px;background:#f0f7f0;border:1px solid #b0d0b0;border-radius:20px;padding:5px 12px;font-size:13px}
+.member-tag-del{background:transparent;border:none;cursor:pointer;color:#999;font-size:14px;line-height:1}
+.member-tag-del:active{color:#c0392b}
+.member-add-row{display:flex;gap:8px}
+.member-add-input{flex:1;font-size:14px;padding:8px 10px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;-webkit-appearance:none}
+.member-add-input:focus{outline:none;border-color:#5a7a5a}
+.member-add-btn{padding:8px 14px;border-radius:8px;border:none;background:#5a7a5a;color:#fff;font-size:13px;cursor:pointer;font-family:inherit;font-weight:700;white-space:nowrap}
 @media print{
-  body{background:#fff}
-  .app{padding:10px}
-  .actions,.notice,.modal-overlay,.add-row-btn,.del-row-btn,.history-box{display:none!important}
+  body{background:#fff}.app{padding:10px}
+  .actions,.notice,.modal-overlay,.member-popup-overlay,.add-row-btn,.del-row-btn,.history-box,.member-box,.pick-btn{display:none!important}
   .cat{border:1px solid #999;margin-bottom:12px;break-inside:avoid}
   .cat-head{background:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:7px 12px;font-size:13px}
-  .row-block{padding:8px 12px}
-  .time-label{width:120px;font-size:11px}
+  .row-block{padding:8px 12px}.time-label{font-size:11px}
   .time-input{border:none;background:transparent;font-size:12px;padding:4px 6px}
   .site-input{border:none;background:transparent;font-size:13px;font-weight:700;padding:4px 6px}
   .print-header{display:flex!important;align-items:baseline;gap:12px;margin-bottom:12px;border-bottom:2px solid #333;padding-bottom:8px}
@@ -77,10 +106,10 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
     <label>日付</label>
     <input type="date" id="reportDate">
   </div>
+  <div id="memberBox"></div>
   <div id="historyBox"></div>
   <div id="cats"></div>
 </div>
-
 <div class="actions">
   <button class="btn-save" onclick="saveData()">💾 保存</button>
   <button class="btn-pdf" onclick="printPDF()">🖨️ PDF</button>
@@ -88,6 +117,7 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
 </div>
 <div class="notice" id="notice"></div>
 
+<!-- 保存モーダル -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h2>💾 保存しました</h2>
@@ -97,6 +127,20 @@ input[type=date]{font-size:16px;padding:8px 10px;border:1px solid #ccc;border-ra
       <button class="modal-btn-copy" onclick="copyUrl()">📋 URLをコピー</button>
       <button class="modal-btn-close" onclick="closeModal()">閉じる</button>
     </div>
+  </div>
+</div>
+
+<!-- メンバー選択ポップアップ -->
+<div class="member-popup-overlay" id="memberPopupOverlay" onclick="closeMemberPopup(event)">
+  <div class="member-popup">
+    <div class="member-popup-head">
+      <span class="member-popup-title">👤 メンバーを選択</span>
+      <button class="member-popup-close" onclick="closeMemberPopupDirect()">×</button>
+    </div>
+    <div class="member-search">
+      <input type="text" id="memberSearchInput" placeholder="名前で絞り込み…" oninput="renderMemberList()">
+    </div>
+    <div class="member-list" id="memberListInPopup"></div>
   </div>
 </div>
 
@@ -115,46 +159,35 @@ const CATS=[
   {id:'hiroi',name:'拾い出し（加工場）'}
 ];
 
-// 全日分のデータを保持するオブジェクト { '2026-06-24': {...}, '2026-06-25': {...} }
 let allData={};
+let members=[];
 let currentDate='';
+let pickTarget={catId:null,ri:null,key:null};
 
 function newRow(){return{site:'',t1:'',t2:'',t3:'',t4:'',t5:''};}
-function newDayData(d){
-  const obj={date:d};
-  CATS.forEach(c=>{obj[c.id]=[newRow()];});
-  return obj;
-}
+function newDayData(d){const obj={date:d};CATS.forEach(c=>{obj[c.id]=[newRow()];});return obj;}
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
-function today(){
-  const d=new Date();
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
-
-// URLハッシュから全データ読み込み
 function loadFromHash(){
   const hash=location.hash;
   if(!hash||hash.length<2)return false;
   try{
     const json=decodeURIComponent(atob(hash.slice(1)));
     const parsed=JSON.parse(json);
-    if(parsed.allData){
-      allData=parsed.allData;
-      return true;
-    }
+    if(parsed.allData){allData=parsed.allData;}
+    if(parsed.members){members=parsed.members;}
+    return true;
   }catch(e){}
   return false;
 }
 
-// 全データをURLハッシュに保存
 function buildUrl(){
-  const payload=JSON.stringify({allData:allData});
+  const payload=JSON.stringify({allData:allData,members:members});
   const encoded=btoa(encodeURIComponent(payload));
   return location.origin+location.pathname+'#'+encoded;
 }
 
 function saveData(){
-  // 現在の入力内容をallDataに保存
   allData[currentDate]=getCurrentDayData();
   const url=buildUrl();
   history.replaceState(null,'',url);
@@ -165,9 +198,7 @@ function saveData(){
 
 function getCurrentDayData(){
   const obj={date:currentDate};
-  CATS.forEach(cat=>{
-    obj[cat.id]=(allData[currentDate]&&allData[currentDate][cat.id])||[newRow()];
-  });
+  CATS.forEach(cat=>{obj[cat.id]=(allData[currentDate]&&allData[currentDate][cat.id])||[newRow()];});
   return obj;
 }
 
@@ -185,15 +216,85 @@ function renderHistory(){
   if(dates.length===0){box.innerHTML='';return;}
   let items=dates.map(d=>{
     const active=d===currentDate?'style="background:#f0f7ff"':'';
-    return`<div class="history-item" ${active} onclick="loadDay('${d}')">
-      <span class="history-date">📅 ${d}</span>
-      <span class="history-arrow">›</span>
-    </div>`;
+    return`<div class="history-item" ${active} onclick="loadDay('${d}')"><span class="history-date">📅 ${d}</span><span class="history-arrow">›</span></div>`;
   }).join('');
-  box.innerHTML=`<div class="history-box">
-    <div class="history-head">📂 保存済み日報</div>
-    ${items}
+  box.innerHTML=`<div class="history-box"><div class="history-head">📂 保存済み日報</div>${items}</div>`;
+}
+
+function renderMembers(){
+  const box=document.getElementById('memberBox');
+  const tags=members.map((m,i)=>`<div class="member-tag">${esc(m)}<button class="member-tag-del" onclick="delMember(${i})">×</button></div>`).join('');
+  box.innerHTML=`<div class="member-box">
+    <div class="member-head" onclick="toggleMemberBody()">
+      <span>👥 メンバー登録（${members.length}人）</span>
+      <button class="member-toggle-btn" onclick="event.stopPropagation();toggleMemberBody()">▼ 開閉</button>
+    </div>
+    <div class="member-body" id="memberBody">
+      <div class="member-tags">${tags||'<span style="font-size:13px;color:#aaa">まだ登録されていません</span>'}</div>
+      <div class="member-add-row">
+        <input class="member-add-input" type="text" id="memberInput" placeholder="名前を入力して追加">
+        <button class="member-add-btn" onclick="addMember()">追加</button>
+      </div>
+    </div>
   </div>`;
+  document.getElementById('memberInput').addEventListener('keydown',function(e){if(e.key==='Enter')addMember();});
+}
+
+function toggleMemberBody(){
+  const b=document.getElementById('memberBody');
+  if(b)b.classList.toggle('open');
+}
+
+function addMember(){
+  const inp=document.getElementById('memberInput');
+  const name=inp.value.trim();
+  if(!name||members.includes(name)){inp.value='';return;}
+  members.push(name);
+  inp.value='';
+  renderMembers();
+}
+
+function delMember(i){
+  members.splice(i,1);
+  renderMembers();
+}
+
+// ポップアップを開く
+function openMemberPopup(catId,ri,key){
+  pickTarget={catId,ri,key};
+  document.getElementById('memberSearchInput').value='';
+  renderMemberList();
+  document.getElementById('memberPopupOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('memberSearchInput').focus(),100);
+}
+
+function renderMemberList(){
+  const q=document.getElementById('memberSearchInput').value.trim();
+  const filtered=q?members.filter(m=>m.includes(q)):members;
+  const list=document.getElementById('memberListInPopup');
+  let html='<div class="member-list-item clear" onclick="pickMember(\'\')">✕ クリア（空にする）</div>';
+  if(filtered.length===0){
+    html+='<div class="member-list-empty">該当するメンバーがいません</div>';
+  }else{
+    html+=filtered.map(m=>`<div class="member-list-item" onclick="pickMember('${esc(m)}')">${esc(m)}</div>`).join('');
+  }
+  list.innerHTML=html;
+}
+
+function pickMember(name){
+  const{catId,ri,key}=pickTarget;
+  if(catId!==null){
+    setVal(catId,ri,key,name);
+    renderCats();
+  }
+  closeMemberPopupDirect();
+}
+
+function closeMemberPopup(e){
+  if(e.target===document.getElementById('memberPopupOverlay'))closeMemberPopupDirect();
+}
+function closeMemberPopupDirect(){
+  document.getElementById('memberPopupOverlay').classList.remove('show');
 }
 
 function renderCats(){
@@ -206,7 +307,12 @@ function renderCats(){
       let timeItems=TIMES.map(t=>`
         <div class="time-item">
           <span class="time-label">${t.label}</span>
-          <input class="time-input" type="text" value="${esc(row[t.key]||'')}" placeholder="名前" oninput="setVal('${cat.id}',${ri},'${t.key}',this.value)">
+          <div class="time-input-wrap">
+            <input class="time-input" type="text" value="${esc(row[t.key]||'')}" placeholder="名前を入力"
+              oninput="setVal('${cat.id}',${ri},'${t.key}',this.value)"
+              autocomplete="off">
+            <button class="pick-btn" onclick="openMemberPopup('${cat.id}',${ri},'${t.key}')">一覧</button>
+          </div>
         </div>`).join('');
       let delBtn=ri>0?`<button class="del-row-btn" onclick="delRow('${cat.id}',${ri})">×</button>`:'';
       return`<div class="row-block">
@@ -218,95 +324,63 @@ function renderCats(){
       </div>`;
     }).join('');
     cont.innerHTML+=`<div class="cat">
-      <div class="cat-head">
-        <span>${cat.name}</span>
-        <button class="add-row-btn" onclick="addRow('${cat.id}')">＋ 現場追加</button>
-      </div>
+      <div class="cat-head"><span>${cat.name}</span><button class="add-row-btn" onclick="addRow('${cat.id}')">＋ 現場追加</button></div>
       ${rowsHtml}
     </div>`;
   });
 }
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
 function setVal(catId,ri,key,val){
   if(!allData[currentDate])allData[currentDate]=newDayData(currentDate);
   if(!allData[currentDate][catId])allData[currentDate][catId]=[newRow()];
+  if(!allData[currentDate][catId][ri])allData[currentDate][catId][ri]=newRow();
   allData[currentDate][catId][ri][key]=val;
 }
-
 function addRow(catId){
   if(!allData[currentDate])allData[currentDate]=newDayData(currentDate);
   allData[currentDate][catId].push(newRow());
   renderCats();
 }
-
-function delRow(catId,ri){
-  allData[currentDate][catId].splice(ri,1);
-  renderCats();
-}
+function delRow(catId,ri){allData[currentDate][catId].splice(ri,1);renderCats();}
 
 function closeModal(){
   document.getElementById('modalOverlay').classList.remove('show');
   showNotice('✓ ブックマークに保存してください');
 }
-
 function copyUrl(){
   const url=document.getElementById('modalUrl').textContent;
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(url).then(()=>{showNotice('✓ URLをコピーしました！');closeModal();});
-  }else{
-    const ta=document.createElement('textarea');
-    ta.value=url;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-    showNotice('✓ URLをコピーしました！');closeModal();
-  }
+  if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>{showNotice('✓ URLをコピーしました！');closeModal();});}
+  else{const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showNotice('✓ URLをコピーしました！');closeModal();}
 }
-
 function showNotice(msg){
-  const n=document.getElementById('notice');
-  n.textContent=msg;n.style.display='block';
+  const n=document.getElementById('notice');n.textContent=msg;n.style.display='block';
   setTimeout(()=>{n.style.display='none';},2500);
 }
-
-function printPDF(){
-  document.getElementById('printDate').textContent=currentDate;
-  window.print();
-}
+function printPDF(){document.getElementById('printDate').textContent=currentDate;window.print();}
 
 function exportHTML(){
-  const d=currentDate;
-  const dayData=allData[d]||{};
-  const now=new Date().toLocaleString('ja-JP');
+  const d=currentDate;const dayData=allData[d]||{};const now=new Date().toLocaleString('ja-JP');
   let secHtml='';
   CATS.forEach(cat=>{
     const rows=(dayData[cat.id]||[]).filter(r=>r.site||TIMES.some(t=>r[t.key]));
     if(!rows.length)return;
     let ths=TIMES.map(t=>`<th style="background:#f0ede6;padding:8px 5px;border:1px solid #ccc;font-size:11px;white-space:nowrap;font-weight:500">${t.label}</th>`).join('');
     let trs=rows.map(row=>{
-      let tds=TIMES.map(t=>{
-        const w=row[t.key]||'';
+      let tds=TIMES.map(t=>{const w=row[t.key]||'';
         if(w==='→')return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center;color:#aaa">→</td>`;
         if(w)return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center;background:#e6f4e6;font-weight:600;font-size:13px">${w}</td>`;
         return`<td style="padding:8px 5px;border:1px solid #ddd;text-align:center"></td>`;
       }).join('');
       return`<tr><td style="padding:8px 10px;border:1px solid #ddd;font-weight:600;font-size:13px;background:#fafaf8">${row.site||''}</td>${tds}</tr>`;
     }).join('');
-    secHtml+=`<div style="margin-bottom:1.5rem">
-      <div style="background:#333;color:#fff;padding:8px 14px;font-size:14px;font-weight:700;border-radius:5px 5px 0 0">${cat.name}</div>
-      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;background:#fff;min-width:500px">
-        <thead><tr><th style="background:#f0ede6;padding:8px 10px;border:1px solid #ccc;text-align:left;min-width:100px;font-size:12px">現場名</th>${ths}</tr></thead>
-        <tbody>${trs}</tbody>
-      </table></div>
-    </div>`;
+    secHtml+=`<div style="margin-bottom:1.5rem"><div style="background:#333;color:#fff;padding:8px 14px;font-size:14px;font-weight:700;border-radius:5px 5px 0 0">${cat.name}</div><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;background:#fff;min-width:500px"><thead><tr><th style="background:#f0ede6;padding:8px 10px;border:1px solid #ccc;text-align:left;min-width:100px;font-size:12px">現場名</th>${ths}</tr></thead><tbody>${trs}</tbody></table></div></div>`;
   });
   if(!secHtml){alert('データが入力されていません。');return;}
-  const html=`<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>作業日報 ${d}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f4f2ed;color:#222}.container{max-width:980px;margin:0 auto;padding:1.5rem 1rem 3rem}header{display:flex;align-items:baseline;gap:16px;margin-bottom:1.5rem;border-bottom:2px solid #333;padding-bottom:10px}h1{font-size:20px;font-weight:700}.date-lbl{font-size:17px;color:#555}.footer{margin-top:2rem;font-size:11px;color:#aaa;text-align:right}@media print{body{background:#fff}}</style></head><body><div class="container"><header><h1>作業日報</h1><span class="date-lbl">${d}</span></header>${secHtml}<div class="footer">作成：${now}</div></div></body></html>`;
+  const html=`<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>作業日報 ${d}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f4f2ed;color:#222}.container{max-width:980px;margin:0 auto;padding:1.5rem 1rem 3rem}header{display:flex;align-items:baseline;gap:16px;margin-bottom:1.5rem;border-bottom:2px solid #333;padding-bottom:10px}h1{font-size:20px;font-weight:700}.date-lbl{font-size:17px;color:#555}.footer{margin-top:2rem;font-size:11px;color:#aaa;text-align:right}</style></head><body><div class="container"><header><h1>作業日報</h1><span class="date-lbl">${d}</span></header>${secHtml}<div class="footer">作成：${now}</div></div></body></html>`;
   const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download=`nippo_${d}.html`;
-  document.body.appendChild(a);a.click();
-  document.body.removeChild(a);
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`nippo_${d}.html`;document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
   showNotice('✓ 作成しました！');
 }
@@ -317,9 +391,9 @@ const td=today();
 currentDate=td;
 if(!allData[td])allData[td]=newDayData(td);
 document.getElementById('reportDate').value=td;
+renderMembers();
 renderCats();
 renderHistory();
-
 document.getElementById('reportDate').addEventListener('change',function(){
   if(this.value)loadDay(this.value);
 });
